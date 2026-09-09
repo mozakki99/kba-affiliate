@@ -112,10 +112,15 @@ export default function AuthPage() {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginIdentity.trim()) return addToast('Mohon masukkan ID Afiliator atau No. WhatsApp.', 'error');
+    if (!loginPassword.trim()) return addToast('Mohon masukkan Kata Sandi (Password).', 'error');
 
-    loginUser(loginIdentity.trim());
-    addToast('Selamat datang kembali di Portal Afiliasi KBA!', 'success');
-    router.push('/');
+    const res = loginUser(loginIdentity.trim(), loginPassword.trim());
+    if (res.success) {
+      addToast('Selamat datang kembali di Portal Afiliasi KBA!', 'success');
+      router.push('/');
+    } else {
+      addToast(res.error || 'Autentikasi gagal.', 'error');
+    }
   };
 
   return (
@@ -145,36 +150,28 @@ export default function AuthPage() {
             <div className="space-y-1">
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Alhamdulillah, {registeredUser.name}!</h2>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Formulir pendaftaran Afiliator Anda telah kami terima dengan ID <span className="font-mono font-bold text-slate-900">{registeredUser.id}</span>.
+                Formulir pendaftaran Afiliator Anda telah kami terima dengan ID pendaftaran <span className="font-mono font-bold text-slate-900">{registeredUser.id}</span>.
               </p>
             </div>
 
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-950 space-y-1.5 leading-relaxed">
-              <span className="font-bold block text-amber-900 flex items-center gap-1">
-                <Info className="w-4 h-4 text-amber-600" /> Langkah Selanjutnya:
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-950 space-y-2 leading-relaxed">
+              <span className="font-bold block text-amber-900 flex items-center gap-1 text-sm">
+                <Info className="w-4 h-4 text-amber-600" /> Status: Peninjauan (Pending)
               </span>
               <p>
-                Admin Kampus Bahasa Arab akan meninjau pendaftaran Anda dan penerbitan <strong>ID Afiliator & Password</strong> akan dikirimkan langsung ke nomor WhatsApp Anda (<strong>{formData.phone}</strong>).
+                Admin Kampus Bahasa Arab akan meninjau pendaftaran Anda. Penerbitan <strong>ID Afiliator Resmi & Password Akses</strong> akan dikirimkan langsung ke nomor WhatsApp Anda (<strong>{formData.phone}</strong>).
+              </p>
+              <p className="text-[11px] text-amber-800 font-medium">
+                * Catatan: Sebelum disetujui oleh Admin, akun Anda belum aktif dan belum dapat digunakan untuk masuk ke portal.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="pt-2">
               <button
                 onClick={() => setRegisteredUser(null)}
-                className="flex-1 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"
+                className="w-full py-3.5 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
-                Kembali ke Halaman Login
-              </button>
-              <button
-                onClick={() => {
-                  if (registeredUser) {
-                    loginUser(registeredUser.name);
-                  }
-                  router.push('/');
-                }}
-                className="flex-1 px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 shadow-md cursor-pointer"
-              >
-                <span>Masuk ke Dashboard Akun Saya</span>
+                <span>Kembali ke Halaman Utama Login</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
