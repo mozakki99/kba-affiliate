@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useKBAStore } from '@/data/store';
 import { ToastContainer, ToastMessage } from '@/components/ui/Toast';
+import { ProductDetailModal } from '@/components/produk/ProductDetailModal';
 import {
   ShieldCheck,
   UserCheck,
@@ -32,6 +33,10 @@ import {
   Edit3,
   Check,
   AlertCircle,
+  BookOpen,
+  HelpCircle,
+  Calculator,
+  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Product, ProductCategory } from '@/types';
@@ -43,6 +48,7 @@ export default function AdminPage() {
     tasks,
     campaigns,
     products,
+    user,
     approveRegistration,
     rejectRegistration,
     addNewTask,
@@ -84,23 +90,45 @@ export default function AdminPage() {
     instructionsText: '1. Salin naskah promosi.\n2. Unggah ke WhatsApp Status.\n3. Centang absensi di portal.',
   });
 
-  // --- KELOLA PRODUK & MATERI STATES ---
+  // --- KELOLA PRODUK & MATERI STATES (FULL DATA EDITING & PREVIEW) ---
   const [showNewProductModal, setShowNewProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [previewProduct, setPreviewProduct] = useState<Product | null>(null);
 
-  const [newProduct, setNewProduct] = useState({
+  // Product Form Input States (for Add & Edit)
+  const [prodForm, setProdForm] = useState<{
+    id?: string;
+    title: string;
+    slug: string;
+    category: ProductCategory;
+    priceSample: string;
+    commissionSample: string;
+    commissionTenSales: string;
+    priceNumber: number;
+    commissionNumber: number;
+    targetAudience: string;
+    benefitsText: string;
+    contentsText: string;
+    faqList: { question: string; answer: string }[];
+    availabilityStatus: 'Tersedia' | 'Stok Terbatas' | 'Pendaftaran Dibuka';
+    telegramChannelUrl: string;
+    copywritingTitle: string;
+    copywritingContent: string;
+  }>({
     title: '',
     slug: '',
-    category: 'Ebook & Kamus' as ProductCategory,
+    category: 'Ebook & Kamus',
     priceSample: 'Rp 99.000',
     commissionSample: 'Rp 35.000 / penjualan',
+    commissionTenSales: 'Rp 350.000',
     priceNumber: 99000,
     commissionNumber: 35000,
     targetAudience: 'Penuntut ilmu & pembelajar bahasa Arab harian.',
-    benefitsText: '1. Panduan dialog lengkap\n2. Audio pengucapan asli native speaker',
-    contentsText: 'Bab 1: Dialog Dasar\nBab 2: Kosakata Penting',
-    availabilityStatus: 'Tersedia' as const,
-    telegramChannelUrl: '',
+    benefitsText: 'Panduan 100+ kosakata penting di bandara, hotel, dan area pertokoan.\nDialog interaktif Arab-Indonesia yang dilengkapi transliterasi.\nBonus rekaman pengucapan audio langsung dari penutur asli (native speaker).',
+    contentsText: 'Bab 1: Prosedur Imigrasi & Bandara Jeddah/Madinah\nBab 2: Komunikasi di Hotel & Layanan Pemesanan\nBab 3: Interaksi di Pertokoan & Tawar Menawar\nBab 4: Panduan Darurat & Petunjuk Arah Lengkap',
+    faqList: [{ question: 'Apakah ebook ini dapat diakses dalam format PDF?', answer: 'Ya, PDF interaktif yang praktis dibaca di smartphone.' }],
+    availabilityStatus: 'Tersedia',
+    telegramChannelUrl: 'https://t.me/materi_kba_official',
     copywritingTitle: 'Narasi Promo Perdana',
     copywritingContent: 'Dapatkan materi eksklusif persembahan Kampus Bahasa Arab...',
   });
@@ -205,54 +233,107 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
     setShowNewTaskModal(false);
   };
 
-  // Product Submit Handlers
-  const handleCreateProduct = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newProduct.title.trim()) return addToast('Isikan nama produk.', 'error');
-
-    const created = addNewProduct({
-      title: newProduct.title.trim(),
-      slug: newProduct.slug.trim() || newProduct.title.toLowerCase().replace(/\s+/g, '-'),
-      category: newProduct.category,
-      priceSample: newProduct.priceSample,
-      commissionSample: newProduct.commissionSample,
-      priceNumber: newProduct.priceNumber,
-      commissionNumber: newProduct.commissionNumber,
-      targetAudience: newProduct.targetAudience,
-      benefits: newProduct.benefitsText.split('\n').filter((b) => b.trim().length > 0),
-      contents: newProduct.contentsText.split('\n').filter((c) => c.trim().length > 0),
-      faq: [{ question: 'Apakah dapat diakses di smartphone?', answer: 'Ya, kompatibel penuh.' }],
-      availabilityStatus: newProduct.availabilityStatus,
-      lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
-      telegramChannelUrl: newProduct.telegramChannelUrl || 'https://t.me/materi_kba_official',
-      generalCopywriting: [
-        {
-          id: `copy-${Date.now()}`,
-          title: newProduct.copywritingTitle || 'Narasi Promo Utama',
-          content: newProduct.copywritingContent || newProduct.title,
-        },
-      ],
+  // Open Edit Product Modal with Full Data Pre-populated
+  const handleOpenEditProduct = (prod: Product) => {
+    setEditingProduct(prod);
+    setProdForm({
+      id: prod.id,
+      title: prod.title,
+      slug: prod.slug,
+      category: prod.category,
+      priceSample: prod.priceSample,
+      commissionSample: prod.commissionSample,
+      commissionTenSales: prod.commissionTenSales || 'Rp 350.000',
+      priceNumber: prod.priceNumber || 99000,
+      commissionNumber: prod.commissionNumber || 35000,
+      targetAudience: prod.targetAudience,
+      benefitsText: prod.benefits.join('\n'),
+      contentsText: prod.contents.join('\n'),
+      faqList: prod.faq && prod.faq.length > 0 ? prod.faq : [{ question: 'Apakah berbentuk PDF?', answer: 'Ya, PDF interaktif.' }],
+      availabilityStatus: prod.availabilityStatus,
+      telegramChannelUrl: prod.telegramChannelUrl || '',
+      copywritingTitle: prod.generalCopywriting?.[0]?.title || 'Narasi Promo Perdana',
+      copywritingContent: prod.generalCopywriting?.[0]?.content || prod.title,
     });
-
-    addToast(`Produk "${created.title}" berhasil ditambahkan!`, 'success');
-    setShowNewProductModal(false);
   };
 
-  const handleUpdateProductSubmit = (e: React.FormEvent) => {
+  // Save Full Product Changes (Create or Edit)
+  const handleSaveFullProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingProduct) return;
+    if (!prodForm.title.trim()) return addToast('Mohon isikan nama produk.', 'error');
 
-    updateProduct(editingProduct.id, {
-      title: editingProduct.title,
-      priceSample: editingProduct.priceSample,
-      commissionSample: editingProduct.commissionSample,
-      availabilityStatus: editingProduct.availabilityStatus,
-      telegramChannelUrl: editingProduct.telegramChannelUrl,
-      lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
-    });
+    const benefitsArray = prodForm.benefitsText.split('\n').filter((b) => b.trim().length > 0);
+    const contentsArray = prodForm.contentsText.split('\n').filter((c) => c.trim().length > 0);
 
-    addToast(`Produk "${editingProduct.title}" berhasil diperbarui!`, 'success');
-    setEditingProduct(null);
+    const copywritingData = [
+      {
+        id: `copy-${Date.now()}`,
+        title: prodForm.copywritingTitle || 'Narasi Promosi Utama',
+        content: prodForm.copywritingContent || prodForm.title,
+      },
+    ];
+
+    if (editingProduct) {
+      // UPDATE EXISTING PRODUCT
+      updateProduct(editingProduct.id, {
+        title: prodForm.title.trim(),
+        slug: prodForm.slug.trim() || prodForm.title.toLowerCase().replace(/\s+/g, '-'),
+        category: prodForm.category,
+        priceSample: prodForm.priceSample,
+        commissionSample: prodForm.commissionSample,
+        commissionTenSales: prodForm.commissionTenSales,
+        priceNumber: Number(prodForm.priceNumber) || 99000,
+        commissionNumber: Number(prodForm.commissionNumber) || 35000,
+        targetAudience: prodForm.targetAudience.trim(),
+        benefits: benefitsArray,
+        contents: contentsArray,
+        faq: prodForm.faqList,
+        availabilityStatus: prodForm.availabilityStatus,
+        telegramChannelUrl: prodForm.telegramChannelUrl.trim(),
+        generalCopywriting: copywritingData,
+        lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+      });
+      addToast(`Produk "${prodForm.title}" berhasil diperbarui selengkapnya!`, 'success');
+      setEditingProduct(null);
+    } else {
+      // ADD NEW PRODUCT
+      const created = addNewProduct({
+        title: prodForm.title.trim(),
+        slug: prodForm.slug.trim() || prodForm.title.toLowerCase().replace(/\s+/g, '-'),
+        category: prodForm.category,
+        priceSample: prodForm.priceSample,
+        commissionSample: prodForm.commissionSample,
+        commissionTenSales: prodForm.commissionTenSales,
+        priceNumber: Number(prodForm.priceNumber) || 99000,
+        commissionNumber: Number(prodForm.commissionNumber) || 35000,
+        targetAudience: prodForm.targetAudience.trim(),
+        benefits: benefitsArray,
+        contents: contentsArray,
+        faq: prodForm.faqList,
+        availabilityStatus: prodForm.availabilityStatus,
+        telegramChannelUrl: prodForm.telegramChannelUrl.trim(),
+        generalCopywriting: copywritingData,
+        lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+      });
+      addToast(`Produk baru "${created.title}" berhasil diterbitkan!`, 'success');
+      setShowNewProductModal(false);
+    }
+  };
+
+  // Add FAQ Item in Form
+  const handleAddFaqItem = () => {
+    setProdForm((prev) => ({
+      ...prev,
+      faqList: [...prev.faqList, { question: '', answer: '' }],
+    }));
+  };
+
+  // Remove FAQ Item in Form
+  const handleRemoveFaqItem = (index: number) => {
+    setProdForm((prev) => ({
+      ...prev,
+      faqList: prev.faqList.filter((_, i) => i !== index),
+    }));
   };
 
   // Add Campaign Submit
@@ -694,7 +775,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </div>
         )}
 
-        {/* TAB 3: KELOLA TUGAS (WITH DATE FILTER & PAGINATION) */}
+        {/* TAB 3: KELOLA TUGAS */}
         {activeTab === 'tugas' && (
           <div className="space-y-4">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -834,19 +915,40 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </div>
         )}
 
-        {/* TAB 4: KELOLA PRODUK & MATERI (FULL FEATURED LIKE AFFILIATE PORTAL) */}
+        {/* TAB 4: KELOLA PRODUK & MATERI (100% SINKRON DENGAN DATA PORTAL AFILIATOR) */}
         {activeTab === 'produk' && (
           <div className="space-y-4">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
               <div>
-                <h2 className="font-bold text-base text-slate-900">Katalog Produk & Materi Promosi</h2>
+                <h2 className="font-bold text-base text-slate-900">Kelola Produk & Materi Promosi (Lengkap)</h2>
                 <p className="text-xs text-slate-500">
-                  Kelola produk digital, komisi sales, naskah copywriting, dan link channel Telegram materi.
+                  Kelola seluruh elemen data produk (Knowledge, Manfaat, Silabus, FAQ, Narasi Iklan, dan Telegram).
                 </p>
               </div>
 
               <button
-                onClick={() => setShowNewProductModal(true)}
+                onClick={() => {
+                  setEditingProduct(null);
+                  setProdForm({
+                    title: '',
+                    slug: '',
+                    category: 'Ebook & Kamus',
+                    priceSample: 'Rp 99.000',
+                    commissionSample: 'Rp 35.000 / penjualan',
+                    commissionTenSales: 'Rp 350.000',
+                    priceNumber: 99000,
+                    commissionNumber: 35000,
+                    targetAudience: 'Penuntut ilmu & pembelajar bahasa Arab harian.',
+                    benefitsText: 'Panduan 100+ kosakata penting di bandara, hotel, dan area pertokoan.\nDialog interaktif Arab-Indonesia yang dilengkapi transliterasi.\nBonus rekaman pengucapan audio langsung dari penutur asli (native speaker).',
+                    contentsText: 'Bab 1: Prosedur Imigrasi & Bandara Jeddah/Madinah\nBab 2: Komunikasi di Hotel & Layanan Pemesanan\nBab 3: Interaksi di Pertokoan & Tawar Menawar\nBab 4: Panduan Darurat & Petunjuk Arah Lengkap',
+                    faqList: [{ question: 'Apakah ebook ini dapat diakses dalam format PDF?', answer: 'Ya, PDF interaktif yang praktis dibaca di smartphone.' }],
+                    availabilityStatus: 'Tersedia',
+                    telegramChannelUrl: 'https://t.me/materi_kba_official',
+                    copywritingTitle: 'Narasi Promo Perdana',
+                    copywritingContent: 'Dapatkan materi eksklusif persembahan Kampus Bahasa Arab...',
+                  });
+                  setShowNewProductModal(true);
+                }}
                 className="px-5 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-colors shadow-md flex items-center justify-center gap-2"
               >
                 <PlusCircle className="w-4 h-4" />
@@ -854,12 +956,14 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
               </button>
             </div>
 
-            <div className="space-y-4">
+            {/* Rich Product Cards */}
+            <div className="space-y-6">
               {products.map((prod) => (
-                <div key={prod.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div key={prod.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-md space-y-5">
+                  {/* Top Bar Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 mb-1">
                         <span className="px-2.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-full text-[10px] font-bold">
                           {prod.category}
                         </span>
@@ -867,46 +971,103 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                           {prod.availabilityStatus}
                         </span>
                       </div>
-                      <h3 className="font-extrabold text-base text-slate-900 mt-1">{prod.title}</h3>
-                      <p className="text-xs font-mono text-slate-500">Slug: {prod.slug}</p>
+                      <h3 className="font-extrabold text-lg text-slate-900">{prod.title}</h3>
+                      <p className="text-xs font-mono text-slate-500">ID: {prod.id} • Slug: {prod.slug}</p>
                     </div>
 
-                    <button
-                      onClick={() => setEditingProduct(prod)}
-                      className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 self-start sm:self-auto"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      <span>Edit Produk</span>
-                    </button>
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                      <button
+                        onClick={() => setPreviewProduct(prod)}
+                        className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span>Preview Modal Afiliator</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenEditProduct(prod)}
+                        className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-amber-400 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                        <span>Edit Produk Lengkap</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                      <span className="text-[10px] text-slate-500 font-bold block uppercase">Harga & Komisi</span>
-                      <p className="text-slate-900 font-bold">Harga: {prod.priceSample}</p>
-                      <p className="text-emerald-700 font-extrabold">Komisi: {prod.commissionSample}</p>
+                  {/* Product Details Overview Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    {/* Price & Commission Details */}
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                      <span className="font-bold text-slate-700 block uppercase text-[10px] border-b border-slate-200 pb-1">
+                        💰 Harga & Komisi Sales
+                      </span>
+                      <p className="text-slate-800">Harga Resmi: <span className="font-bold text-slate-900">{prod.priceSample}</span></p>
+                      <p className="text-emerald-800">Komisi 1 Sales: <span className="font-extrabold bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300">{prod.commissionSample}</span></p>
+                      <p className="text-blue-900 font-bold pt-1 border-t border-slate-200">Estimasi 10 Sales: <span className="text-blue-950 font-extrabold">🎁 {prod.commissionTenSales || 'Rp 350.000'}</span></p>
                     </div>
 
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                      <span className="text-[10px] text-slate-500 font-bold block uppercase">Target Audience & Manfaat</span>
-                      <p className="text-slate-700 line-clamp-2">{prod.targetAudience}</p>
-                    </div>
-
-                    <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-1">
-                      <span className="text-[10px] text-blue-900 font-bold block uppercase">Material & Telegram</span>
-                      <p className="text-xs text-blue-950 font-medium truncate">
-                        {prod.generalCopywriting?.length || 0} Narasi Promosi Terverifikasi
-                      </p>
+                    {/* Target Audience & Telegram */}
+                    <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                      <span className="font-bold text-slate-700 block uppercase text-[10px] border-b border-slate-200 pb-1">
+                        🎯 Target Pembeli & Material Telegram
+                      </span>
+                      <p className="text-slate-800 line-clamp-3"><strong className="text-slate-900">Target Market:</strong> {prod.targetAudience}</p>
                       {prod.telegramChannelUrl && (
                         <a
                           href={prod.telegramChannelUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-bold text-blue-800 hover:underline flex items-center gap-1 text-xs pt-1"
+                          className="font-bold text-sky-700 hover:underline flex items-center gap-1 text-xs pt-1 border-t border-slate-200"
                         >
-                          Channel Telegram <ExternalLink className="w-3 h-3" />
+                          <Send className="w-3.5 h-3.5 text-sky-600" />
+                          <span>Channel Telegram Material ↗</span>
                         </a>
                       )}
+                    </div>
+
+                    {/* Copywriting Preview */}
+                    <div className="p-4 bg-blue-50/60 rounded-xl border border-blue-200/80 space-y-2">
+                      <span className="font-bold text-blue-950 block uppercase text-[10px] border-b border-blue-200 pb-1">
+                        📝 Narasi Iklan Evergreen ({prod.generalCopywriting?.length || 0})
+                      </span>
+                      {prod.generalCopywriting && prod.generalCopywriting.length > 0 ? (
+                        <div>
+                          <p className="font-bold text-blue-900 text-xs">{prod.generalCopywriting[0].title}</p>
+                          <p className="text-slate-700 font-mono text-[11px] line-clamp-3 mt-1 bg-white p-2 rounded border border-blue-100">
+                            {prod.generalCopywriting[0].content}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-slate-500 italic">Belum ada narasi khusus diset.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Expandable Benefits & Syllabus Accordion */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                    <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <span className="font-bold text-slate-800 block text-[11px] uppercase">
+                        ✅ Keunggulan Utama ({prod.benefits.length} Poin)
+                      </span>
+                      <ul className="space-y-1 text-slate-700 pl-1">
+                        {prod.benefits.map((b, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-emerald-600 font-bold">•</span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                      <span className="font-bold text-slate-800 block text-[11px] uppercase">
+                        📚 Silabus / Daftar Isi ({prod.contents.length} Bab)
+                      </span>
+                      <div className="font-mono text-slate-700 space-y-1">
+                        {prod.contents.map((c, idx) => (
+                          <p key={idx}>• {c}</p>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -964,6 +1125,16 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </div>
         )}
       </main>
+
+      {/* PREVIEW PRODUCT MODAL FOR ADMIN */}
+      {previewProduct && (
+        <ProductDetailModal
+          product={previewProduct}
+          userLynkId={user.lynkIdUsername || 'ahmad'}
+          onClose={() => setPreviewProduct(null)}
+          onShowToast={addToast}
+        />
+      )}
 
       {/* APPROVAL & CREDENTIALS MODAL */}
       {selectedRegId && (
@@ -1148,198 +1319,275 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
         </div>
       )}
 
-      {/* NEW PRODUCT MODAL */}
-      {showNewProductModal && (
+      {/* FULL PRODUCT EDIT / ADD MODAL */}
+      {(showNewProductModal || editingProduct) && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
           <form
-            onSubmit={handleCreateProduct}
-            className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto"
+            onSubmit={handleSaveFullProduct}
+            className="bg-white rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-base text-slate-900">Tambah Produk & Materi Baru</h3>
-              <button type="button" onClick={() => setShowNewProductModal(false)} className="text-slate-400">
+              <h3 className="font-extrabold text-base sm:text-lg text-slate-900 flex items-center gap-2">
+                <Package className="w-5 h-5 text-blue-800" />
+                <span>{editingProduct ? `Edit Produk Lengkap: ${editingProduct.title}` : 'Tambah Produk Digital Baru'}</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowNewProductModal(false);
+                  setEditingProduct(null);
+                }}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-1 text-xs">
-              <label className="font-bold text-slate-700">Nama Produk *</label>
-              <input
-                type="text"
-                required
-                placeholder="Contoh: Ebook Percakapan Bahasa Arab Mandiri"
-                value={newProduct.title}
-                onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-              />
-            </div>
+            {/* 1. Basic Info & Category */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-1">
+                1. Informasi Dasar Produk
+              </h4>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Kategori Produk</label>
-                <select
-                  value={newProduct.category}
-                  onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value as any })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-                >
-                  <option value="Ebook & Kamus">Ebook & Kamus</option>
-                  <option value="Kelas">Kelas Digital</option>
-                  <option value="Produk digital lainnya">Produk Digital Lainnya</option>
-                  <option value="Materi gratis">Materi Gratis</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Status Ketersediaan</label>
-                <select
-                  value={newProduct.availabilityStatus}
-                  onChange={(e) => setNewProduct({ ...newProduct, availabilityStatus: e.target.value as any })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-                >
-                  <option value="Tersedia">Tersedia</option>
-                  <option value="Stok Terbatas">Stok Terbatas</option>
-                  <option value="Pendaftaran Dibuka">Pendaftaran Dibuka</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Harga Sampel</label>
+              <div className="space-y-1 text-xs">
+                <label className="font-bold text-slate-700">Nama Produk *</label>
                 <input
                   type="text"
-                  placeholder="Rp 99.000"
-                  value={newProduct.priceSample}
-                  onChange={(e) => setNewProduct({ ...newProduct, priceSample: e.target.value })}
+                  required
+                  placeholder="Ebook Percakapan Umrah Mandiri"
+                  value={prodForm.title}
+                  onChange={(e) => setProdForm({ ...prodForm, title: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-slate-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Slug URL (lynk.id/.../slug)</label>
+                  <input
+                    type="text"
+                    placeholder="ebook-umrah"
+                    value={prodForm.slug}
+                    onChange={(e) => setProdForm({ ...prodForm, slug: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-blue-900 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Kategori</label>
+                  <select
+                    value={prodForm.category}
+                    onChange={(e) => setProdForm({ ...prodForm, category: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                  >
+                    <option value="Ebook & Kamus">Ebook & Kamus</option>
+                    <option value="Kelas">Kelas Digital</option>
+                    <option value="Produk digital lainnya">Produk Digital Lainnya</option>
+                    <option value="Materi gratis">Materi Gratis</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Status Ketersediaan</label>
+                  <select
+                    value={prodForm.availabilityStatus}
+                    onChange={(e) => setProdForm({ ...prodForm, availabilityStatus: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
+                  >
+                    <option value="Tersedia">Tersedia</option>
+                    <option value="Stok Terbatas">Stok Terbatas</option>
+                    <option value="Pendaftaran Dibuka">Pendaftaran Dibuka</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Pricing & Commissions */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-1">
+                2. Harga & Nilai Komisi
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Harga Resmi (Teks)</label>
+                  <input
+                    type="text"
+                    value={prodForm.priceSample}
+                    onChange={(e) => setProdForm({ ...prodForm, priceSample: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Komisi 1 Sales (Teks)</label>
+                  <input
+                    type="text"
+                    value={prodForm.commissionSample}
+                    onChange={(e) => setProdForm({ ...prodForm, commissionSample: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-emerald-800 outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Bonus 10 Sales (Teks)</label>
+                  <input
+                    type="text"
+                    value={prodForm.commissionTenSales}
+                    onChange={(e) => setProdForm({ ...prodForm, commissionTenSales: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-blue-900 outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Product Knowledge (Target Market, Benefits, Contents, FAQ) */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-1">
+                3. Product Knowledge (Manfaat & Silabus)
+              </h4>
+
+              <div className="space-y-1 text-xs">
+                <label className="font-bold text-slate-700">Target Pembeli Ideal (Market Fit) *</label>
+                <input
+                  type="text"
+                  required
+                  value={prodForm.targetAudience}
+                  onChange={(e) => setProdForm({ ...prodForm, targetAudience: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Keunggulan & Manfaat (1 per baris)</label>
+                  <textarea
+                    rows={4}
+                    value={prodForm.benefitsText}
+                    onChange={(e) => setProdForm({ ...prodForm, benefitsText: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-sans"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700">Daftar Isi / Silabus (1 per baris)</label>
+                  <textarea
+                    rows={4}
+                    value={prodForm.contentsText}
+                    onChange={(e) => setProdForm({ ...prodForm, contentsText: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* FAQ Section */}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-slate-700 text-xs">FAQ Pertanyaan Pembeli ({prodForm.faqList.length})</label>
+                  <button
+                    type="button"
+                    onClick={handleAddFaqItem}
+                    className="text-xs text-blue-700 font-bold hover:underline flex items-center gap-1"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>Tambah Q&A</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {prodForm.faqList.map((faq, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <input
+                          type="text"
+                          placeholder="Pertanyaan (Q:...)"
+                          value={faq.question}
+                          onChange={(e) => {
+                            const updatedFaq = [...prodForm.faqList];
+                            updatedFaq[idx].question = e.target.value;
+                            setProdForm({ ...prodForm, faqList: updatedFaq });
+                          }}
+                          className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg font-bold outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveFaqItem(idx)}
+                          className="text-slate-400 hover:text-rose-600 p-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Jawaban (A:...)"
+                        value={faq.answer}
+                        onChange={(e) => {
+                          const updatedFaq = [...prodForm.faqList];
+                          updatedFaq[idx].answer = e.target.value;
+                          setProdForm({ ...prodForm, faqList: updatedFaq });
+                        }}
+                        className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Telegram & Copywriting Script */}
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-1">
+                4. Material Telegram & Narasi Iklan Evergreen
+              </h4>
+
+              <div className="space-y-1 text-xs">
+                <label className="font-bold text-slate-700">Link Telegram Channel Material Promo</label>
+                <input
+                  type="text"
+                  placeholder="https://t.me/materi_kba_official"
+                  value={prodForm.telegramChannelUrl}
+                  onChange={(e) => setProdForm({ ...prodForm, telegramChannelUrl: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                />
+              </div>
+
+              <div className="space-y-2 text-xs">
+                <label className="font-bold text-slate-700">Judul Narasi Iklan</label>
+                <input
+                  type="text"
+                  value={prodForm.copywritingTitle}
+                  onChange={(e) => setProdForm({ ...prodForm, copywritingTitle: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
                 />
-              </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Komisi Sales</label>
-                <input
-                  type="text"
-                  placeholder="Rp 35.000 / penjualan"
-                  value={newProduct.commissionSample}
-                  onChange={(e) => setNewProduct({ ...newProduct, commissionSample: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-emerald-800"
+                <label className="font-bold text-slate-700 block">Teks Narasi Iklan (Evergreen)</label>
+                <textarea
+                  rows={4}
+                  value={prodForm.copywritingContent}
+                  onChange={(e) => setProdForm({ ...prodForm, copywritingContent: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-mono text-xs"
                 />
               </div>
             </div>
 
-            <div className="space-y-1 text-xs">
-              <label className="font-bold text-slate-700">Link Telegram Material</label>
-              <input
-                type="text"
-                placeholder="https://t.me/materi_kba_channel"
-                value={newProduct.telegramChannelUrl}
-                onChange={(e) => setNewProduct({ ...newProduct, telegramChannelUrl: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-              />
-            </div>
-
-            <div className="pt-2 flex gap-3">
+            {/* Submit Action Bar */}
+            <div className="pt-3 border-t border-slate-200 flex gap-3">
               <button
                 type="button"
-                onClick={() => setShowNewProductModal(false)}
-                className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold"
+                onClick={() => {
+                  setShowNewProductModal(false);
+                  setEditingProduct(null);
+                }}
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md"
+                className="flex-1 py-3 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-colors shadow-md flex items-center justify-center gap-2"
               >
-                Simpan Produk
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* EDIT PRODUCT MODAL */}
-      {editingProduct && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <form
-            onSubmit={handleUpdateProductSubmit}
-            className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200"
-          >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-base text-slate-900">Edit Produk & Link Materi</h3>
-              <button type="button" onClick={() => setEditingProduct(null)} className="text-slate-400">
-                <XCircle className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-1 text-xs">
-              <label className="font-bold text-slate-700">Nama Produk *</label>
-              <input
-                type="text"
-                required
-                value={editingProduct.title}
-                onChange={(e) => setEditingProduct({ ...editingProduct, title: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Harga Sampel</label>
-                <input
-                  type="text"
-                  value={editingProduct.priceSample}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, priceSample: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Komisi Sales</label>
-                <input
-                  type="text"
-                  value={editingProduct.commissionSample}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, commissionSample: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-emerald-800"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1 text-xs">
-              <label className="font-bold text-slate-700">Status Ketersediaan</label>
-              <select
-                value={editingProduct.availabilityStatus}
-                onChange={(e) => setEditingProduct({ ...editingProduct, availabilityStatus: e.target.value as any })}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-              >
-                <option value="Tersedia">Tersedia</option>
-                <option value="Stok Terbatas">Stok Terbatas</option>
-                <option value="Pendaftaran Dibuka">Pendaftaran Dibuka</option>
-              </select>
-            </div>
-
-            <div className="space-y-1 text-xs">
-              <label className="font-bold text-slate-700">Link Telegram Materi</label>
-              <input
-                type="text"
-                value={editingProduct.telegramChannelUrl || ''}
-                onChange={(e) => setEditingProduct({ ...editingProduct, telegramChannelUrl: e.target.value })}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-              />
-            </div>
-
-            <div className="pt-2 flex gap-3">
-              <button
-                type="button"
-                onClick={() => setEditingProduct(null)}
-                className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                className="flex-1 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md"
-              >
-                Simpan Perubahan
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Simpan Seluruh Data Produk</span>
               </button>
             </div>
           </form>
