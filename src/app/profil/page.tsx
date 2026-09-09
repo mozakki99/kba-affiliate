@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useKBAStore } from '@/data/store';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
-import { DemoBadge } from '@/components/layout/DemoBadge';
 import { ToastContainer, ToastMessage } from '@/components/ui/Toast';
 import { copyToClipboard } from '@/lib/utils';
 import {
@@ -97,7 +96,6 @@ export default function ProfilPage() {
       <DesktopSidebar user={user} />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <DemoBadge onResetDemo={resetDemoState} />
 
         <div className="p-4 sm:p-8 max-w-5xl w-full mx-auto space-y-6">
           {/* Header */}

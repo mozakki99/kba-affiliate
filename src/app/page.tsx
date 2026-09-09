@@ -6,7 +6,6 @@ import { useKBAStore } from '@/data/store';
 import { getCurrentDateFormatted, copyToClipboard } from '@/lib/utils';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
-import { DemoBadge } from '@/components/layout/DemoBadge';
 import { TaskCard } from '@/components/tugas/TaskCard';
 import { TaskDetailModal } from '@/components/tugas/TaskDetailModal';
 import { ToastContainer, ToastMessage } from '@/components/ui/Toast';
@@ -130,7 +129,6 @@ export default function HomePage() {
       <DesktopSidebar user={user} />
 
       <main className="flex-1 flex flex-col min-w-0">
-        <DemoBadge onResetDemo={resetDemoState} />
 
         <div className="p-4 sm:p-6 max-w-5xl w-full mx-auto space-y-5">
           {/* HEADER STATISTIK BERANDA DETAIL (HARI, POIN, MISI SELESAI, MISI TERLEWAT, PERINGKAT) */}
