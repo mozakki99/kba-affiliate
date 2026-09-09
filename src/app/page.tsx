@@ -145,7 +145,7 @@ export default function HomePage() {
                 </div>
                 <div className="min-w-0">
                   <h1 className="text-xs font-extrabold text-slate-900 truncate leading-tight">
-                    Assalamu'alaikum, {user.name.split(' ')[0]}!
+                    Ahlan, {user.name.split(' ')[0]}!
                   </h1>
                   <div className="flex items-center gap-2 text-[11px] text-slate-600 mt-0.5">
                     <span className="text-emerald-800 font-extrabold">{user.totalPoints || 770} Poin</span>
@@ -248,7 +248,7 @@ export default function HomePage() {
                   Hari ini: {getCurrentDateFormatted()} (WIB)
                 </span>
                 <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1.5">
-                  Assalamu'alaikum, {user.name}!
+                  Ahlan, {user.name}!
                 </h1>
                 <p className="text-xs text-slate-500">
                   ID Afiliator: <strong className="text-amber-800">{user.id}</strong> • Lynk.id: <strong className="text-blue-800">lynk.id/{user.lynkIdUsername}</strong>
@@ -346,10 +346,10 @@ export default function HomePage() {
                   Program Afiliator Teraktif
                 </span>
                 <h2 className="font-bold text-sm sm:text-base text-white leading-snug">
-                  Total Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Pekan Ini!
+                  Total Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Bulan Ini!
                 </h2>
                 <p className="text-emerald-100 text-[11px] leading-relaxed">
-                  Apresiasi khusus bagi mitra afiliator yang rutin publikasikan materi edukasi harian (Insentif Rp 15.000 / orang).
+                  Apresiasi khusus bagi mitra afiliator yang rutin publikasikan materi edukasi bulan ini (Insentif Rp 15.000 / orang).
                 </p>
               </div>
             </div>
@@ -367,13 +367,13 @@ export default function HomePage() {
               <div>
                 <span className="bg-blue-100 text-blue-950 font-extrabold text-xs px-3 py-1 rounded-lg inline-flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-blue-700 shrink-0" />
-                  TUGAS HARI INI ({tasks.filter((t) => t.deadline.includes('Hari ini')).length} MISI AKTIF)
+                  TUGAS AKTIF KBA ({tasks.filter((t) => t.deadline.includes('Hari ini')).length} MISI)
                 </span>
                 <h2 className="font-bold text-slate-900 text-base sm:text-lg mt-1.5">
-                  Misi Promosi Harian (Batas Absensi 23:59 WIB)
+                  Misi Promosi Aktif KBA (Batas Absensi Same-Day 23:59 WIB)
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Kerjakan & lapor absensi untuk akumulasi Poin Rajin dan Poin Viewers.
+                  Tugas dirilis secara berkala oleh KBA. Kerjakan & lapor absensi pada hari penugasan untuk klaim poin.
                 </p>
               </div>
 
@@ -381,25 +381,37 @@ export default function HomePage() {
                 href="https://t.me/materi_kba_official_private"
                 target="_blank"
                 rel="noreferrer"
-                className="px-3 py-1.5 bg-sky-50 text-sky-800 border border-sky-200 rounded-xl text-xs font-bold hover:bg-sky-100 transition-colors flex items-center gap-1"
+                className="px-3 py-1.5 bg-sky-50 text-sky-800 border border-sky-200 rounded-xl text-xs font-bold hover:bg-sky-100 transition-colors flex items-center gap-1 shrink-0 self-start sm:self-auto"
               >
-                <Send className="w-3.5 h-3.5 text-sky-600" />
+                <Send className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                 <span>Channel Telegram Materi</span>
               </a>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tasks
-                .filter((t) => t.deadline.includes('Hari ini'))
-                .map((t) => (
-                  <TaskCard
-                    key={t.id}
-                    task={t}
-                    isProminent={t.status === 'Belum dikerjakan'}
-                    onOpenTask={(task) => setSelectedTask(task)}
-                  />
-                ))}
-            </div>
+            {tasks.filter((t) => t.deadline.includes('Hari ini')).length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {tasks
+                  .filter((t) => t.deadline.includes('Hari ini'))
+                  .map((t) => (
+                    <TaskCard
+                      key={t.id}
+                      task={t}
+                      isProminent={t.status === 'Belum dikerjakan'}
+                      onOpenTask={(task) => setSelectedTask(task)}
+                    />
+                  ))}
+              </div>
+            ) : (
+              <div className="p-6 bg-slate-50 border border-slate-200 rounded-xl text-center space-y-2">
+                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-sm">Belum Ada Tugas Baru Hari Ini</h3>
+                <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                  Materi promosi dirilis oleh KBA secara berkala. Silakan pantau kembali atau manfaatkan naskah promo serbaguna di menu <strong>Produk & Materi</strong>.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>

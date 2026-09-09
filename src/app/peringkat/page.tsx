@@ -64,10 +64,10 @@ export default function PeringkatPage() {
           <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-emerald-700 space-y-2">
             <div className="flex items-center gap-2">
               <Gift className="w-5 h-5 text-amber-400 shrink-0" />
-              <h2 className="text-sm sm:text-base font-bold">Program Apresiasi Afiliator Teraktif Pekan Ini</h2>
+              <h2 className="text-sm sm:text-base font-bold">Program Apresiasi Afiliator Teraktif Bulan Ini</h2>
             </div>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Pekan Ini</strong> (masing-masing Rp 15.000). 
+              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Bulan Ini</strong> (masing-masing Rp 15.000). 
               Penilaian dihitung secara adil berdasarkan konsistensi publikasi edukasi harian Anda.
             </p>
           </div>
@@ -97,7 +97,7 @@ export default function PeringkatPage() {
                 <p className="font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Masuk Top 10 Penerima Apresiasi
                 </p>
-                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Pekan Ini)</p>
+                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Bulan Ini)</p>
               </div>
             </div>
           )}
