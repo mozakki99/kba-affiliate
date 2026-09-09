@@ -31,6 +31,8 @@ import {
   Lock,
   Filter,
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -121,6 +123,9 @@ export default function HomePage() {
     }
   };
 
+  // Mobile Collapsible Header State
+  const [showMobileStats, setShowMobileStats] = useState(false);
+
   // Quick form state cleaned up in favor of multi-task modal checklist
 
   return (
@@ -131,8 +136,110 @@ export default function HomePage() {
       <main className="flex-1 flex flex-col min-w-0">
 
         <div className="p-4 sm:p-6 max-w-5xl w-full mx-auto space-y-5">
-          {/* HEADER STATISTIK BERANDA DETAIL (HARI, POIN, MISI SELESAI, MISI TERLEWAT, PERINGKAT) */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          {/* MOBILE STICKY COMPACT BAR & EXPANDABLE DROPDOWN STATS */}
+          <div className="md:hidden sticky top-0 z-20 bg-white/95 backdrop-blur-md border border-slate-200 shadow-xs rounded-2xl p-3.5 space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-blue-800 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+                  {user.name.charAt(0)}
+                </div>
+                <div className="min-w-0">
+                  <h1 className="text-xs font-extrabold text-slate-900 truncate leading-tight">
+                    Assalamu'alaikum, {user.name.split(' ')[0]}!
+                  </h1>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-600 mt-0.5">
+                    <span className="text-emerald-800 font-extrabold">{user.totalPoints || 770} Poin</span>
+                    <span>•</span>
+                    <span className="text-amber-800 font-extrabold flex items-center gap-0.5">
+                      <Flame className="w-3 h-3 text-amber-500 fill-amber-500" /> {user.streakDays} Hari
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowMobileStats(!showMobileStats)}
+                className="flex items-center gap-1 text-xs font-bold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-xl shrink-0 transition-colors shadow-2xs"
+              >
+                <span>{showMobileStats ? 'Tutup Stat' : 'Detail Stat'}</span>
+                {showMobileStats ? <ChevronUp className="w-3.5 h-3.5 text-blue-700" /> : <ChevronDown className="w-3.5 h-3.5 text-blue-700" />}
+              </button>
+            </div>
+
+            {/* Dropdown Panel Content on Mobile */}
+            {showMobileStats && (
+              <div className="pt-3 border-t border-slate-100 space-y-3 animate-in slide-in-from-top-2 duration-200">
+                <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                  <span className="flex items-center gap-1 text-blue-900 font-bold bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                    <Calendar className="w-3 h-3 text-blue-600" /> Hari ini: {getCurrentDateFormatted()} (WIB)
+                  </span>
+                  <span>ID: <strong className="text-amber-800">{user.id}</strong></span>
+                </div>
+
+                {/* 5 Metrics Grid on Mobile */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-200 space-y-0.5">
+                    <span className="text-[10px] text-emerald-800 font-bold flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" /> Misi Selesai
+                    </span>
+                    <p className="text-sm font-extrabold text-emerald-950">{completedMissionsCount} Misi</p>
+                    <span className="text-[9px] text-emerald-700">Lifetime Selesai</span>
+                  </div>
+
+                  <div className="bg-rose-50/80 p-2.5 rounded-xl border border-rose-200 space-y-0.5">
+                    <span className="text-[10px] text-rose-800 font-bold flex items-center gap-1">
+                      <XCircle className="w-3 h-3 text-rose-600 shrink-0" /> Misi Terlewat
+                    </span>
+                    <p className="text-sm font-extrabold text-rose-950">{missedMissionsCount} Misi</p>
+                    <span className="text-[9px] text-rose-700">Lifetime Terlewat</span>
+                  </div>
+
+                  <div className="bg-blue-50/80 p-2.5 rounded-xl border border-blue-200 space-y-0.5">
+                    <span className="text-[10px] text-blue-900 font-bold flex items-center gap-1">
+                      <Award className="w-3 h-3 text-blue-600 shrink-0" /> Poin Rajin
+                    </span>
+                    <p className="text-sm font-extrabold text-blue-900">+{user.diligencePoints || 420} Poin</p>
+                    <span className="text-[9px] text-blue-700">Bonus Absensi</span>
+                  </div>
+
+                  <div className="bg-amber-50/80 p-2.5 rounded-xl border border-amber-200 space-y-0.5">
+                    <span className="text-[10px] text-amber-900 font-bold flex items-center gap-1">
+                      <TrendingUp className="w-3 h-3 text-amber-600 shrink-0" /> Poin Viewers
+                    </span>
+                    <p className="text-sm font-extrabold text-amber-900">+{user.viewerPoints || 350} Poin</p>
+                    <span className="text-[9px] text-amber-800">1 Viewer = +1 Poin</span>
+                  </div>
+
+                  <div className="bg-emerald-100/90 p-2.5 rounded-xl border border-emerald-300 space-y-0.5 col-span-2">
+                    <div className="flex items-center justify-between text-[10px] text-emerald-950 font-bold">
+                      <span className="flex items-center gap-1">
+                        <Trophy className="w-3 h-3 text-amber-600 shrink-0" /> Total Poin Kejujuran
+                      </span>
+                      <span className="text-emerald-800 font-extrabold">(#3 Top 10)</span>
+                    </div>
+                    <p className="text-sm font-extrabold text-emerald-950">{user.totalPoints || 770} Poin Terakumulasi</p>
+                  </div>
+                </div>
+
+                <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-900 flex items-center justify-between gap-2 font-bold">
+                  <span className="flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> Sistem Kejujuran KBA Active
+                  </span>
+                  <a
+                    href="https://t.me/materi_kba_official_private"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] text-sky-800 underline flex items-center gap-0.5 shrink-0 font-bold"
+                  >
+                    <Send className="w-3 h-3 text-sky-600" /> Telegram
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* DESKTOP HEADER STATISTIK (FULL VISIBLE ON DESKTOP) */}
+          <div className="hidden md:block bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
             {/* Row 1: Day & Date Greeting */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div>
@@ -148,7 +255,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Streak Badge (R-31 Design Choice: Amber accent for active user motivation without endless animation loop) */}
+              {/* Streak Badge */}
               <div className="flex items-center gap-2 bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-xs">
                 <Flame className="w-4 h-4 text-slate-950" />
                 <span>Streak Promosi: {user.streakDays} Hari</span>
