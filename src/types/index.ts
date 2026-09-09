@@ -62,6 +62,9 @@ export interface Product {
   category: ProductCategory;
   priceSample: string;
   commissionSample: string;
+  commissionTenSales?: string;
+  priceNumber?: number;
+  commissionNumber?: number;
   targetAudience: string;
   benefits: string[];
   contents: string[];

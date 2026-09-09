@@ -14,6 +14,8 @@ import {
   BookOpen,
   FileText,
   Sparkles,
+  Calculator,
+  TrendingUp,
 } from 'lucide-react';
 
 interface ProductDetailModalProps {
@@ -31,6 +33,14 @@ export function ProductDetailModal({ product, userLynkId, onClose, onShowToast }
 
   const [activeTab, setActiveTab] = useState<'knowledge' | 'copywriting'>('knowledge');
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [closingCount, setClosingCount] = useState<number>(10);
+
+  const priceVal = product.priceNumber || 99000;
+  const commVal = product.commissionNumber || 35000;
+
+  const formatRupiah = (val: number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+  };
 
   const handleCopyLynkUrl = async () => {
     const ok = await copyToClipboard(lynkUrl);
@@ -135,14 +145,86 @@ export function ProductDetailModal({ product, userLynkId, onClose, onShowToast }
                   <p className="text-slate-500 font-medium">Target Pembeli Ideal (Market Fit):</p>
                   <p className="font-semibold text-slate-900 mt-1">{product.targetAudience}</p>
                 </div>
-                <div className="space-y-1 sm:border-l sm:border-slate-200 sm:pl-4">
+                <div className="space-y-1.5 sm:border-l sm:border-slate-200 sm:pl-4">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Harga:</span>
+                    <span className="text-slate-500">Harga Resmi:</span>
                     <span className="font-bold text-slate-900">{product.priceSample}</span>
                   </div>
                   <div className="flex justify-between text-emerald-800">
-                    <span className="font-medium">Komisi Afiliator:</span>
-                    <span className="font-bold">{product.commissionSample}</span>
+                    <span className="font-medium">Komisi / Penjualan:</span>
+                    <span className="font-bold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-200">
+                      {product.commissionSample}
+                    </span>
+                  </div>
+                  {product.commissionTenSales && (
+                    <div className="flex justify-between text-blue-900 font-bold pt-1 border-t border-slate-200">
+                      <span>Estimasi 10 Penjualan:</span>
+                      <span className="text-blue-950 font-extrabold">🎁 {product.commissionTenSales}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Interactive Commission Calculator Widget */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-xl border border-blue-800 space-y-3 shadow-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calculator className="w-5 h-5 text-amber-400 shrink-0" />
+                    <h3 className="font-bold text-sm sm:text-base text-white">Simulasi Hitung Komisi Closing</h3>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded border border-amber-400/30">
+                    Kalkulator Interaktif
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <label className="text-slate-300 font-medium">Bila Berhasil Closing Berapa Produk?</label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        max="1000"
+                        value={closingCount}
+                        onChange={(e) => setClosingCount(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-24 px-3 py-1.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-right font-bold text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                      <span className="text-slate-300 font-medium">Penjualan</span>
+                    </div>
+                  </div>
+
+                  {/* Quick Presets */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[11px] text-slate-400 mr-1">Preset Cepat:</span>
+                    {[1, 5, 10, 20, 50, 100].map((preset) => (
+                      <button
+                        key={preset}
+                        onClick={() => setClosingCount(preset)}
+                        className={`px-2.5 py-1 rounded-md text-xs font-bold transition-colors ${
+                          closingCount === preset
+                            ? 'bg-amber-400 text-slate-950 shadow-xs'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                        }`}
+                      >
+                        {preset}x Closing
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Calculation Result Display */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+                  <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700">
+                    <span className="text-[11px] text-slate-400 block">Total Omset Penjualan:</span>
+                    <span className="text-sm sm:text-base font-extrabold text-slate-200 font-mono">
+                      {formatRupiah(closingCount * priceVal)}
+                    </span>
+                  </div>
+                  <div className="bg-emerald-950/80 p-3.5 rounded-lg border border-emerald-500/50">
+                    <span className="text-[11px] text-emerald-300 block font-semibold">Estimasi Komisi Bersih Anda:</span>
+                    <span className="text-base sm:text-xl font-extrabold text-emerald-300 font-mono">
+                      {formatRupiah(closingCount * commVal)}
+                    </span>
                   </div>
                 </div>
               </div>

@@ -22,8 +22,11 @@ export const initialProducts: Product[] = [
     title: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     slug: 'ebook-umrah',
     category: 'Ebook & Kamus',
-    priceSample: 'Rp 99.000 (Data contoh)',
-    commissionSample: 'Rp 35.000 / penjualan (Data contoh)',
+    priceSample: 'Rp 99.000',
+    commissionSample: 'Rp 35.000 / penjualan',
+    commissionTenSales: 'Rp 350.000',
+    priceNumber: 99000,
+    commissionNumber: 35000,
     targetAudience: 'Calon jamaah umrah mandiri dan pembelajar bahasa Arab yang ingin lancar berkomunikasi harian di Tanah Suci.',
     benefits: [
       'Panduan 100+ kosakata penting di bandara, hotel, dan area pertokoan.',
@@ -65,8 +68,11 @@ Dapatkan materi lengkapnya melalui tautan resmi berikut:`,
     title: 'Paket Bundling 3 Kamus Percakapan Logat Saudi',
     slug: 'bundling-saudi',
     category: 'Ebook & Kamus',
-    priceSample: 'Rp 199.000 (Data contoh)',
-    commissionSample: 'Rp 70.000 / penjualan (Data contoh)',
+    priceSample: 'Rp 199.000',
+    commissionSample: 'Rp 70.000 / penjualan',
+    commissionTenSales: 'Rp 700.000',
+    priceNumber: 199000,
+    commissionNumber: 70000,
     targetAudience: 'Penuntut ilmu, profesional di Arab Saudi, serta jamaah umrah dan haji.',
     benefits: [
       'Mencakup 3 jilid kamus percakapan bahasa Ammiyah Saudi populer.',
@@ -87,15 +93,31 @@ Dapatkan materi lengkapnya melalui tautan resmi berikut:`,
     availabilityStatus: 'Stok Terbatas',
     lastUpdated: '28 Agustus 2026',
     telegramChannelUrl: 'https://t.me/materi_kba_saudi_private',
-    generalCopywriting: [],
+    generalCopywriting: [
+      {
+        id: 'copy-2',
+        title: 'Narasi Promosi 1: Kuasai Dialek Saudi Ammiyah',
+        content: `Ingin lancar berkomunikasi dengan warga lokal Saudi saat Umrah, Haji, atau Bekerja? 🇸🇦
+
+Kuasai dialek Ammiyah Saudi melalui Paket Bundling 3 Kamus Percakapan KBA:
+• 3.000+ Ungkapan Populer Wilayah Riyadh & Hijaz
+• Disusun oleh Alumni Universitas Islam Madinah
+• Praktis & Mudah Dipelajari Kapan Saja
+
+Pesan sekarang melalui tautan resmi berikut:`,
+      },
+    ],
   },
   {
     id: 'prod-3',
     title: 'Kamus Percakapan Ammiyah Jilid 1 dengan Audio',
     slug: 'kamus-ammiyah-1',
     category: 'Ebook & Kamus',
-    priceSample: 'Rp 79.000 (Data contoh)',
-    commissionSample: 'Rp 25.000 / penjualan (Data contoh)',
+    priceSample: 'Rp 79.000',
+    commissionSample: 'Rp 25.000 / penjualan',
+    commissionTenSales: 'Rp 250.000',
+    priceNumber: 79000,
+    commissionNumber: 25000,
     targetAudience: 'Pembelajar pemula yang ingin menguasai dialek Ammiyah Arab secara bertahap.',
     benefits: [
       'Dilengkapi audio penggalan kata langsung dari penutur asli.',
@@ -106,7 +128,20 @@ Dapatkan materi lengkapnya melalui tautan resmi berikut:`,
     availabilityStatus: 'Tersedia',
     lastUpdated: '15 Agustus 2026',
     telegramChannelUrl: 'https://t.me/materi_kba_ammiyah1_private',
-    generalCopywriting: [],
+    generalCopywriting: [
+      {
+        id: 'copy-3',
+        title: 'Narasi Promosi 1: Belajar Ammiyah Pemula 10 Menit Sehari',
+        content: `Langkah awal praktis kuasai percakapan Arab harian hanya dalam 10 menit sehari! 📚✨
+
+Dapatkan Kamus Percakapan Ammiyah Jilid 1 lengkap dengan Audio Native Speaker:
+• Ungkapan Sapaan & Transaksi Harian
+• Audio Pengucapan Jelas & Mudah Dikuti
+• Cocok untuk Pemula & Pembelajar Mandiri
+
+Amankan aksesnya melalui tautan berikut:`,
+      },
+    ],
   },
 ];
 

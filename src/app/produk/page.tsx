@@ -62,10 +62,10 @@ export default function ProdukPage() {
             <div>
               <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
                 <Package className="w-6 h-6 text-blue-700" />
-                Katalog Produk KBA
+                Materi Produk, Narasi Iklan & Simulasi Komisi
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Kumpulan e-book, kamus, dan kelas Kampus Bahasa Arab. Materi gambar & video resmi disalurkan via Telegram Private.
+                Pusat Product Knowledge resmi KBA, naskah iklan default, harga bersih, estimasi komisi 10 penjualan, dan kalkulator simulasi closing.
               </p>
             </div>
           </div>

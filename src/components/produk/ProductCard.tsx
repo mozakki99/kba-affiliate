@@ -48,18 +48,26 @@ export function ProductCard({ product, onOpenDetail }: ProductCardProps) {
           {product.targetAudience}
         </p>
 
-        {/* Price & Commission (Sample Data) */}
-        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 mb-4 space-y-1">
+        {/* Price, Commission per Sale & 10 Sales Estimation */}
+        <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/90 mb-4 space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-600">
-            <span>Estimasi Harga:</span>
-            <span className="font-semibold text-slate-900">{product.priceSample}</span>
+            <span>Harga Resmi:</span>
+            <span className="font-bold text-slate-900">{product.priceSample}</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-emerald-700 font-medium">
-            <span>Komisi Afiliator:</span>
-            <span className="font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">
+          <div className="flex items-center justify-between text-xs text-emerald-800 font-medium">
+            <span>Komisi / Penjualan:</span>
+            <span className="font-bold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-200">
               {product.commissionSample}
             </span>
           </div>
+          {product.commissionTenSales && (
+            <div className="pt-2 border-t border-slate-200/70 flex items-center justify-between text-xs font-semibold text-blue-900">
+              <span>Estimasi 10 Closing:</span>
+              <span className="bg-blue-100 text-blue-950 px-2 py-0.5 rounded font-extrabold border border-blue-200">
+                🎁 {product.commissionTenSales}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
