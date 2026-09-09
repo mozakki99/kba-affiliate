@@ -166,10 +166,15 @@ export default function AuthPage() {
                 Kembali ke Halaman Login
               </button>
               <button
-                onClick={() => router.push('/')}
-                className="flex-1 px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 shadow-md"
+                onClick={() => {
+                  if (registeredUser) {
+                    loginUser(registeredUser.name);
+                  }
+                  router.push('/');
+                }}
+                className="flex-1 px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 shadow-md cursor-pointer"
               >
-                <span>Lihat Dashboard Demo</span>
+                <span>Masuk ke Dashboard Akun Saya</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

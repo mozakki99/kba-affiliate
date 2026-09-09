@@ -343,7 +343,81 @@ export function useKBAStore() {
   };
 
   const loginUser = (identity: string) => {
-    saveState({ ...state, isLoggedIn: true });
+    const clean = identity.trim().toLowerCase();
+    const cleanPhone = identity.replace(/[^0-9]/g, '');
+
+    // 1. Search in existing active affiliates list
+    let matchedAffiliate = state.affiliates.find(
+      (a) =>
+        a.id.toLowerCase() === clean ||
+        (a.phone && a.phone.replace(/[^0-9]/g, '') === cleanPhone && cleanPhone.length > 5) ||
+        (a.email && a.email.toLowerCase() === clean) ||
+        a.name.toLowerCase() === clean
+    );
+
+    if (matchedAffiliate) {
+      saveState({ ...state, user: matchedAffiliate, isLoggedIn: true });
+      return { success: true, user: matchedAffiliate };
+    }
+
+    // 2. Search in registration applicants list (including pending or recently registered)
+    const matchedReg = state.registrations.find(
+      (r) =>
+        r.id.toLowerCase() === clean ||
+        (r.approvedAffiliateId && r.approvedAffiliateId.toLowerCase() === clean) ||
+        (r.phone && r.phone.replace(/[^0-9]/g, '') === cleanPhone && cleanPhone.length > 5) ||
+        (r.email && r.email.toLowerCase() === clean) ||
+        r.name.toLowerCase() === clean
+    );
+
+    if (matchedReg) {
+      const newUserFromReg: AffiliateUser = {
+        id: matchedReg.approvedAffiliateId || `KBA-2026-${matchedReg.id.slice(-4)}`,
+        name: matchedReg.name,
+        email: matchedReg.email || `${clean}@kampusbahasaarab.com`,
+        phone: matchedReg.phone,
+        lynkIdUsername: matchedReg.lynkIdUsername || matchedReg.name.toLowerCase().replace(/\s+/g, ''),
+        joinedDate: matchedReg.registeredAt ? (matchedReg.registeredAt.split(',')[0] || '2026-09-10') : '2026-09-10',
+        streakDays: 1,
+        diligencePoints: 0,
+        viewerPoints: 0,
+        totalPoints: 0,
+        address: matchedReg.address,
+        age: matchedReg.age,
+        dailyActivity: matchedReg.dailyActivity,
+        hasLynkId: matchedReg.hasLynkId,
+        instagram: matchedReg.instagram || '',
+        tiktok: '',
+        waGroup: 'Grup Sahabat KBA Utama',
+        instagramFollowers: matchedReg.instagramFollowers,
+        telegramUsername: matchedReg.telegramUsername,
+        telegramFollowers: matchedReg.telegramFollowers,
+        waAverageViewers: matchedReg.waAverageViewers,
+        otherSocialMedia: matchedReg.otherSocialMedia,
+        agreedToRules: matchedReg.agreedToRules,
+      };
+      saveState({ ...state, user: newUserFromReg, isLoggedIn: true });
+      return { success: true, user: newUserFromReg };
+    }
+
+    // 3. Fallback: Create dynamic clean user with target identity
+    const dynamicUser: AffiliateUser = {
+      id: identity.toUpperCase().startsWith('KBA') ? identity.toUpperCase() : `KBA-2026-${Math.floor(10 + Math.random() * 90)}`,
+      name: identity,
+      email: `${clean.replace(/[^a-z0-9]/g, '')}@kampusbahasaarab.com`,
+      phone: identity,
+      lynkIdUsername: clean.replace(/[^a-z0-9]/g, '') || 'afiliator',
+      joinedDate: new Date().toISOString().split('T')[0],
+      streakDays: 1,
+      diligencePoints: 0,
+      viewerPoints: 0,
+      totalPoints: 0,
+      instagram: '',
+      tiktok: '',
+      waGroup: 'Grup Sahabat KBA Utama',
+    };
+    saveState({ ...state, user: dynamicUser, isLoggedIn: true });
+    return { success: true, user: dynamicUser };
   };
 
   const logoutUser = () => {
