@@ -29,7 +29,7 @@ export default function AuthPage() {
   const router = useRouter();
   const { registerUser, loginUser } = useKBAStore();
 
-  const [authMode, setAuthMode] = useState<'register' | 'login'>('register');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // Registration Form State
@@ -53,6 +53,7 @@ export default function AuthPage() {
 
   // Login Form State
   const [loginIdentity, setLoginIdentity] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   // Success State
   const [registeredUser, setRegisteredUser] = useState<{ id: string; name: string } | null>(null);
@@ -110,7 +111,7 @@ export default function AuthPage() {
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginIdentity.trim()) return addToast('Mohon masukkan Nomor WhatsApp atau ID Afiliator.', 'error');
+    if (!loginIdentity.trim()) return addToast('Mohon masukkan ID Afiliator atau No. WhatsApp.', 'error');
 
     loginUser(loginIdentity.trim());
     addToast('Selamat datang kembali di Portal Afiliasi KBA!', 'success');
@@ -121,7 +122,7 @@ export default function AuthPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <ToastContainer toasts={toasts} onDismiss={removeToast} />
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
+      <div className="sm:mx-auto sm:w-full sm:max-w-xl">
         {/* Brand Header */}
         <div className="text-center space-y-2 mb-6">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-800 text-amber-400 font-extrabold text-2xl shadow-md">
@@ -131,7 +132,7 @@ export default function AuthPage() {
             Portal Afiliasi Kampus Bahasa Arab
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-            Bergabunglah menjadi bagian dari syiar edukasi bahasa Arab dan dapatkan komisi penjualan serta insentif apresiasi bulanan.
+            Masuk ke akun afiliator Anda untuk mengklaim poin keaktifan, memantau peringkat, dan komisi closing.
           </p>
         </div>
 
@@ -165,18 +166,6 @@ export default function AuthPage() {
             <div className="flex border-b border-slate-200 bg-slate-50/80">
               <button
                 type="button"
-                onClick={() => setAuthMode('register')}
-                className={`flex-1 py-4 text-xs sm:text-sm font-bold border-b-2 transition-colors flex items-center justify-center gap-2 ${
-                  authMode === 'register'
-                    ? 'border-blue-800 text-blue-800 bg-white'
-                    : 'border-transparent text-slate-500 hover:text-slate-900'
-                }`}
-              >
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Daftar Afiliator Baru</span>
-              </button>
-              <button
-                type="button"
                 onClick={() => setAuthMode('login')}
                 className={`flex-1 py-4 text-xs sm:text-sm font-bold border-b-2 transition-colors flex items-center justify-center gap-2 ${
                   authMode === 'login'
@@ -187,9 +176,73 @@ export default function AuthPage() {
                 <Lock className="w-4 h-4 text-blue-700" />
                 <span>Masuk (Login)</span>
               </button>
+              <button
+                type="button"
+                onClick={() => setAuthMode('register')}
+                className={`flex-1 py-4 text-xs sm:text-sm font-bold border-b-2 transition-colors flex items-center justify-center gap-2 ${
+                  authMode === 'register'
+                    ? 'border-blue-800 text-blue-800 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>Daftar Baru</span>
+              </button>
             </div>
 
             <div className="p-6 sm:p-8">
+              {/* LOGIN FORM (PRIMARY DEFAULT) */}
+              {authMode === 'login' && (
+                <form onSubmit={handleLoginSubmit} className="space-y-4">
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <label className="font-semibold text-slate-700">ID Afiliator / No. WhatsApp / Email *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Masukkan ID (KBA-XXX) / No WA / Email"
+                      value={loginIdentity}
+                      onChange={(e) => setLoginIdentity(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1 text-xs sm:text-sm">
+                    <label className="font-semibold text-slate-700">Kata Sandi (Password) *</label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Masukkan kata sandi akun Anda"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm sm:text-base rounded-xl transition-colors shadow-md flex items-center justify-center gap-2"
+                    >
+                      <span>Masuk ke Dashboard</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 text-center">
+                    <p className="text-xs sm:text-sm text-slate-600">
+                      Belum punya akun afiliator?{' '}
+                      <button
+                        type="button"
+                        onClick={() => setAuthMode('register')}
+                        className="text-blue-800 font-bold hover:underline transition-colors"
+                      >
+                        Daftar Sekarang ↗
+                      </button>
+                    </p>
+                  </div>
+                </form>
+              )}
+
               {/* REGISTER FORM */}
               {authMode === 'register' && (
                 <form onSubmit={handleRegisterSubmit} className="space-y-6">
@@ -421,38 +474,19 @@ export default function AuthPage() {
                     <span>Kirim & Selesaikan Pendaftaran</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
-                </form>
-              )}
 
-              {/* LOGIN FORM */}
-              {authMode === 'login' && (
-                <form onSubmit={handleLoginSubmit} className="space-y-5">
-                  <div className="space-y-2 text-center max-w-sm mx-auto">
-                    <h3 className="font-bold text-slate-900 text-base">Masuk ke Akun Afiliator Anda</h3>
-                    <p className="text-xs text-slate-500">
-                      Masukkan Nomor WhatsApp terdaftar atau ID Afiliator Anda (contoh: KBA-014).
+                  <div className="pt-4 border-t border-slate-100 text-center">
+                    <p className="text-xs sm:text-sm text-slate-600">
+                      Sudah punya akun afiliator?{' '}
+                      <button
+                        type="button"
+                        onClick={() => setAuthMode('login')}
+                        className="text-blue-800 font-bold hover:underline transition-colors"
+                      >
+                        Masuk Sekarang ↗
+                      </button>
                     </p>
                   </div>
-
-                  <div className="space-y-1 max-w-sm mx-auto text-xs sm:text-sm">
-                    <label className="font-semibold text-slate-700">Nomor WA / ID Afiliator *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Masukkan No WA atau ID (KBA-XXX)"
-                      value={loginIdentity}
-                      onChange={(e) => setLoginIdentity(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full max-w-sm mx-auto py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold text-sm rounded-xl transition-colors shadow-md flex items-center justify-center gap-2"
-                  >
-                    <span>Masuk ke Dashboard</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
                 </form>
               )}
             </div>
