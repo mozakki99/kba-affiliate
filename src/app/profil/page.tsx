@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useKBAStore } from '@/data/store';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
@@ -15,16 +16,25 @@ import {
   Info,
   ExternalLink,
   ShieldCheck,
+  LogOut,
 } from 'lucide-react';
 
 export default function ProfilPage() {
+  const router = useRouter();
   const {
     user,
+    isLoggedIn,
     products,
     isLoaded,
     updateUserProfile,
-    resetDemoState,
+    logoutUser,
   } = useKBAStore();
+
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.replace('/auth');
+    }
+  }, [isLoaded, isLoggedIn, router]);
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -242,6 +252,24 @@ export default function ProfilPage() {
                 );
               })}
             </div>
+          </div>
+
+          {/* Logout Section */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs flex items-center justify-between gap-4">
+            <div>
+              <h3 className="font-bold text-slate-900 text-sm">Keluar dari Akun Afiliator</h3>
+              <p className="text-xs text-slate-500">Anda dapat masuk kembali kapan saja dengan ID / WA & Password Anda.</p>
+            </div>
+            <button
+              onClick={() => {
+                logoutUser();
+                router.push('/auth');
+              }}
+              className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Keluar Akun</span>
+            </button>
           </div>
         </div>
       </main>

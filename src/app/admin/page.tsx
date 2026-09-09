@@ -37,6 +37,8 @@ import {
   HelpCircle,
   Calculator,
   Trash2,
+  LogOut,
+  ArrowRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Product, ProductCategory } from '@/types';
@@ -49,6 +51,9 @@ export default function AdminPage() {
     campaigns,
     products,
     user,
+    isAdminLoggedIn,
+    loginAdmin,
+    logoutAdmin,
     approveRegistration,
     rejectRegistration,
     addNewTask,
@@ -57,6 +62,11 @@ export default function AdminPage() {
     updateProduct,
     resetDemoState,
   } = useKBAStore();
+
+  const pendingCount = registrations.filter((r) => r.status === 'Pending').length;
+
+  const [adminIdInput, setAdminIdInput] = useState('');
+  const [adminPassInput, setAdminPassInput] = useState('');
 
   const [activeTab, setActiveTab] = useState<'pendaftaran' | 'afiliator' | 'tugas' | 'produk' | 'kampanye'>('pendaftaran');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -396,7 +406,93 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
     return matchesSearch && matchesStatus;
   });
 
-  const pendingCount = registrations.filter((r) => r.status === 'Pending').length;
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = loginAdmin(adminIdInput, adminPassInput);
+    if (res.success) {
+      addToast('Ahlan wa Sahlan, Administrator KBA!', 'success');
+    } else {
+      addToast(res.error || 'Autentikasi Admin gagal.', 'error');
+    }
+  };
+
+  // IF ADMIN IS NOT LOGGED IN -> RENDER ADMIN LOGIN SCREEN
+  if (!isAdminLoggedIn) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        <ToastContainer toasts={toasts} onDismiss={removeToast} />
+
+        <div className="sm:mx-auto sm:w-full sm:max-w-md space-y-6">
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-800 text-amber-400 font-extrabold text-2xl shadow-lg border border-blue-700">
+              KBA
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              Portal Akses Administrator
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400">
+              Masuk untuk mengelola pendaftaran, terbitkan akun WA, dan jadwalkan tugas afiliator.
+            </p>
+          </div>
+
+          <div className="bg-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-700 space-y-5">
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div className="space-y-1 text-xs sm:text-sm">
+                <label className="font-bold text-slate-300">ID / Username Admin *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="admin"
+                  value={adminIdInput}
+                  onChange={(e) => setAdminIdInput(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white font-mono focus:ring-2 focus:ring-amber-400 outline-none"
+                />
+              </div>
+
+              <div className="space-y-1 text-xs sm:text-sm">
+                <label className="font-bold text-slate-300">Kata Sandi (Password Admin) *</label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={adminPassInput}
+                  onChange={(e) => setAdminPassInput(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-400 outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 bg-blue-700 hover:bg-blue-600 text-white font-extrabold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>Masuk ke Dashboard Administrator</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
+
+            <div className="p-3.5 bg-slate-900/90 border border-amber-500/30 rounded-xl text-xs space-y-1 text-slate-300">
+              <span className="font-bold text-amber-400 block flex items-center gap-1">
+                🔑 Kredensial Default Admin Demo:
+              </span>
+              <p>
+                Username: <strong className="font-mono text-white">admin</strong>
+              </p>
+              <p>
+                Password: <strong className="font-mono text-white">admin123</strong>
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link href="/" className="text-xs text-slate-400 hover:text-amber-400 transition-colors inline-flex items-center gap-1">
+              <span>← Kembali ke Portal Afiliator</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans pb-16">
@@ -432,12 +528,17 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
               <span>Portal Afiliator</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </Link>
+
             <button
-              onClick={resetDemoState}
-              title="Reset Data Demo"
-              className="px-2.5 py-1.5 bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 rounded-lg text-xs font-medium border border-slate-700 transition-colors"
+              onClick={() => {
+                logoutAdmin();
+                addToast('Anda telah keluar dari Portal Admin.', 'info');
+              }}
+              title="Keluar Admin"
+              className="px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-800 rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Keluar</span>
             </button>
           </div>
         </div>

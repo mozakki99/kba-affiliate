@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useKBAStore } from '@/data/store';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
@@ -11,7 +12,14 @@ import { Product } from '@/types';
 import { Package, Search, Filter } from 'lucide-react';
 
 export default function ProdukPage() {
-  const { user, products, isLoaded, resetDemoState } = useKBAStore();
+  const router = useRouter();
+  const { user, isLoggedIn, products, isLoaded, resetDemoState } = useKBAStore();
+
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.replace('/auth');
+    }
+  }, [isLoaded, isLoggedIn, router]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');

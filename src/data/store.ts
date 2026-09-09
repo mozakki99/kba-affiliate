@@ -18,6 +18,7 @@ const STORAGE_KEY = 'kba_affiliate_demo_state_v5';
 interface AppState {
   user: AffiliateUser;
   isLoggedIn: boolean;
+  isAdminLoggedIn: boolean;
   tasks: Task[];
   products: Product[];
   campaigns: Campaign[];
@@ -31,6 +32,7 @@ export function useKBAStore() {
   const [state, setState] = useState<AppState>({
     user: initialUser,
     isLoggedIn: true,
+    isAdminLoggedIn: false,
     tasks: initialTasks,
     products: initialProducts,
     campaigns: initialCampaigns,
@@ -51,6 +53,7 @@ export function useKBAStore() {
           ...prev,
           user: parsed.user || initialUser,
           isLoggedIn: parsed.isLoggedIn !== undefined ? parsed.isLoggedIn : true,
+          isAdminLoggedIn: parsed.isAdminLoggedIn !== undefined ? parsed.isAdminLoggedIn : false,
           tasks: parsed.tasks || initialTasks,
           products: parsed.products || initialProducts,
           campaigns: parsed.campaigns || initialCampaigns,
@@ -73,6 +76,7 @@ export function useKBAStore() {
         JSON.stringify({
           user: newState.user,
           isLoggedIn: newState.isLoggedIn,
+          isAdminLoggedIn: newState.isAdminLoggedIn,
           tasks: newState.tasks,
           products: newState.products,
           campaigns: newState.campaigns,
@@ -324,6 +328,20 @@ export function useKBAStore() {
   };
 
 
+  const loginAdmin = (identity: string, pass: string) => {
+    const idClean = identity.trim().toLowerCase();
+    const passClean = pass.trim();
+    if ((idClean === 'admin' || idClean === 'admin@kampusbahasaarab.com') && (passClean === 'admin123' || passClean === 'kbaAdmin2026')) {
+      saveState({ ...state, isAdminLoggedIn: true });
+      return { success: true };
+    }
+    return { success: false, error: 'ID Admin atau Kata Sandi salah! (Default: admin / admin123)' };
+  };
+
+  const logoutAdmin = () => {
+    saveState({ ...state, isAdminLoggedIn: false });
+  };
+
   const loginUser = (identity: string) => {
     saveState({ ...state, isLoggedIn: true });
   };
@@ -341,6 +359,7 @@ export function useKBAStore() {
     setState({
       user: initialUser,
       isLoggedIn: true,
+      isAdminLoggedIn: false,
       tasks: initialTasks,
       products: initialProducts,
       campaigns: initialCampaigns,
@@ -367,6 +386,8 @@ export function useKBAStore() {
     updateProduct,
     loginUser,
     logoutUser,
+    loginAdmin,
+    logoutAdmin,
     resetDemoState,
   };
 }

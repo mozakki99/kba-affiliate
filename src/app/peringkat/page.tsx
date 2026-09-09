@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useKBAStore } from '@/data/store';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { Trophy, Award, ShoppingBag, Info, Gift, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function PeringkatPage() {
-  const { user, leaderboardActivity, leaderboardSales, isLoaded, resetDemoState } = useKBAStore();
+  const router = useRouter();
+  const { user, isLoggedIn, leaderboardActivity, leaderboardSales, isLoaded, resetDemoState } = useKBAStore();
+
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.replace('/auth');
+    }
+  }, [isLoaded, isLoggedIn, router]);
 
   const [activeTab, setActiveTab] = useState<'Keaktifan' | 'Penjualan'>('Keaktifan');
   const [selectedMonth, setSelectedMonth] = useState<string>('September');

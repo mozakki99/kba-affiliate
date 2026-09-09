@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useKBAStore } from '@/data/store';
 import { getCurrentDateFormatted, copyToClipboard } from '@/lib/utils';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
@@ -36,14 +37,22 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
+  const router = useRouter();
   const {
     user,
+    isLoggedIn,
     tasks,
     campaigns,
     isLoaded,
     submitTaskChecklist,
     resetDemoState,
   } = useKBAStore();
+
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.replace('/auth');
+    }
+  }, [isLoaded, isLoggedIn, router]);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
