@@ -505,8 +505,11 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Kampanye ({campaigns.length})</span>
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>Kampanye</span>
+            <span className="px-1.5 py-0.5 bg-amber-400 text-slate-950 rounded text-[10px] font-black uppercase">
+              Mendatang
+            </span>
           </button>
         </div>
 
@@ -1079,11 +1082,27 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
         {/* TAB 5: KELOLA KAMPANYE */}
         {activeTab === 'kampanye' && (
           <div className="space-y-4">
+            {/* Fitur Mendatang Notice Banner */}
+            <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl flex items-start gap-3 text-xs text-amber-950">
+              <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-sm text-amber-900">📌 Fitur Kampanye Diskon (Fitur Mendatang)</h3>
+                  <span className="px-2 py-0.5 bg-amber-200 text-amber-950 rounded text-[10px] font-black uppercase">
+                    Dalam Pengembangan Konsep
+                  </span>
+                </div>
+                <p className="leading-relaxed">
+                  Fitur ini disiapkan untuk merilis event promosi berseri terbatas (seperti <em>Flash Sale Pekan Umrah</em>) dengan tantangan berseri, poin ganda, dan bonus uang tunai untuk 10 afiliator terajin. Anda tetap dapat mencoba membuat draf simulasi kampanye di bawah ini untuk melihat gambaran alurnya.
+                </p>
+              </div>
+            </div>
+
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
               <div>
-                <h2 className="font-bold text-base text-slate-900">Kelola Kampanye Komisi</h2>
+                <h2 className="font-bold text-base text-slate-900">Simulasi Kelola Kampanye Komisi</h2>
                 <p className="text-xs text-slate-500">
-                  Kampanye promo yang sedang berjalan dan dapat diikuti seluruh afiliator.
+                  Draf kampanye promo yang siap dirilis saat fitur ini aktif penuh.
                 </p>
               </div>
 
@@ -1092,7 +1111,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                 className="px-5 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-colors shadow-md flex items-center justify-center gap-2"
               >
                 <PlusCircle className="w-4 h-4" />
-                <span>Buat Kampanye Baru</span>
+                <span>Buat Draf Kampanye Baru</span>
               </button>
             </div>
 

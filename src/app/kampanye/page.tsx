@@ -57,12 +57,17 @@ export default function KampanyePage() {
           {/* Header */}
           <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-                <Megaphone className="w-6 h-6 text-blue-700" />
-                Kampanye Afiliasi
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Program promosi berseri berskala besar dengan poin ganda dan bonus insentif keaktifan.
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                  <Megaphone className="w-6 h-6 text-blue-700" />
+                  Kampanye Afiliasi
+                </h1>
+                <span className="px-3 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-black uppercase tracking-wider animate-pulse flex items-center gap-1">
+                  📌 Fitur Mendatang (Segera Hadir)
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                Fitur ini sedang dalam tahap pengembangan konsep. Nanti di sini Admin dapat merilis event promo terbatas (seperti <em>Flash Sale Pekan Umrah</em>) dengan tantangan berseri, poin ganda, dan bonus apresiasi khusus.
               </p>
             </div>
 
