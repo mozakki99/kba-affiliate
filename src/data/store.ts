@@ -15,6 +15,7 @@ const STORAGE_KEY = 'kba_affiliate_demo_state_v4';
 
 interface AppState {
   user: AffiliateUser;
+  isLoggedIn: boolean;
   tasks: Task[];
   products: Product[];
   campaigns: Campaign[];
@@ -25,6 +26,7 @@ interface AppState {
 export function useKBAStore() {
   const [state, setState] = useState<AppState>({
     user: initialUser,
+    isLoggedIn: true,
     tasks: initialTasks,
     products: initialProducts,
     campaigns: initialCampaigns,
@@ -42,6 +44,7 @@ export function useKBAStore() {
         setState((prev) => ({
           ...prev,
           user: parsed.user || initialUser,
+          isLoggedIn: parsed.isLoggedIn !== undefined ? parsed.isLoggedIn : true,
           tasks: parsed.tasks || initialTasks,
         }));
       }
@@ -59,6 +62,7 @@ export function useKBAStore() {
         STORAGE_KEY,
         JSON.stringify({
           user: newState.user,
+          isLoggedIn: newState.isLoggedIn,
           tasks: newState.tasks,
         })
       );
@@ -154,6 +158,48 @@ export function useKBAStore() {
     saveState({ ...state, user: updatedUser, tasks: updatedTasks });
   };
 
+  const registerUser = (userData: Partial<AffiliateUser>) => {
+    const newId = `KBA-${Math.floor(100 + Math.random() * 900)}`;
+    const now = new Date();
+    const joinedDate = now.toISOString().split('T')[0];
+
+    const newUser: AffiliateUser = {
+      ...initialUser,
+      id: newId,
+      name: userData.name || 'Afiliator Baru',
+      email: userData.email || 'afiliator@kampusbahasaarab.com',
+      phone: userData.phone || '08123456789',
+      address: userData.address || '',
+      age: userData.age || '',
+      dailyActivity: userData.dailyActivity || '',
+      hasLynkId: userData.hasLynkId ?? true,
+      lynkIdUsername: (userData.lynkIdUsername || 'afiliator').toLowerCase().trim(),
+      instagram: userData.instagram || '',
+      instagramFollowers: userData.instagramFollowers || '',
+      telegramUsername: userData.telegramUsername || '',
+      telegramFollowers: userData.telegramFollowers || '',
+      waAverageViewers: userData.waAverageViewers || '',
+      otherSocialMedia: userData.otherSocialMedia || '',
+      agreedToRules: userData.agreedToRules ?? true,
+      joinedDate,
+      streakDays: 1,
+      diligencePoints: 0,
+      viewerPoints: 0,
+      totalPoints: 0,
+    };
+
+    saveState({ ...state, user: newUser, isLoggedIn: true });
+    return newUser;
+  };
+
+  const loginUser = (identity: string) => {
+    saveState({ ...state, isLoggedIn: true });
+  };
+
+  const logoutUser = () => {
+    saveState({ ...state, isLoggedIn: false });
+  };
+
   const resetDemoState = () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -162,6 +208,7 @@ export function useKBAStore() {
     }
     setState({
       user: initialUser,
+      isLoggedIn: true,
       tasks: initialTasks,
       products: initialProducts,
       campaigns: initialCampaigns,
@@ -176,6 +223,9 @@ export function useKBAStore() {
     getLynkUrlForProduct,
     updateUserProfile,
     submitTaskChecklist,
+    registerUser,
+    loginUser,
+    logoutUser,
     resetDemoState,
   };
 }

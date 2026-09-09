@@ -12,6 +12,16 @@ export interface AffiliateUser {
   diligencePoints?: number; // Poin Rajin
   viewerPoints?: number; // Poin Viewers
   totalPoints?: number; // Total Poin Terakumulasi
+  address?: string;
+  age?: string;
+  dailyActivity?: string;
+  hasLynkId?: boolean;
+  instagramFollowers?: string;
+  telegramUsername?: string;
+  telegramFollowers?: string;
+  waAverageViewers?: string;
+  otherSocialMedia?: string;
+  agreedToRules?: boolean;
 }
 
 export type TaskStatus = 'Belum dikerjakan' | 'Selesai' | 'Terlewat' | 'Terkunci';

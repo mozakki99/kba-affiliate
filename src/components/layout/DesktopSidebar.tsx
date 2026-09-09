@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Megaphone, Package, Trophy, UserCheck, BookOpen } from 'lucide-react';
+import { Home, Megaphone, Package, Trophy, UserCheck, BookOpen, UserPlus } from 'lucide-react';
 import { AffiliateUser } from '@/types';
 
 interface DesktopSidebarProps {
@@ -71,9 +71,18 @@ export function DesktopSidebar({ user }: DesktopSidebarProps) {
       </nav>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-slate-100 text-xs text-slate-400 space-y-1">
-        <p className="font-medium text-slate-500">KBA Affiliate Portal v2.0</p>
-        <p>Lynk.id Username: {user.lynkIdUsername}</p>
+      <div className="p-4 border-t border-slate-100 text-xs text-slate-400 space-y-2">
+        <Link
+          href="/auth"
+          className="flex items-center justify-center gap-2 p-2 bg-blue-50 text-blue-800 rounded-lg hover:bg-blue-100 transition-colors font-bold text-xs border border-blue-200"
+        >
+          <UserPlus className="w-4 h-4 text-blue-700 shrink-0" />
+          <span>Daftar / Login Akun Baru</span>
+        </Link>
+        <div className="space-y-0.5 pt-1">
+          <p className="font-medium text-slate-500">KBA Affiliate Portal v2.0</p>
+          <p>Lynk.id Username: {user.lynkIdUsername}</p>
+        </div>
       </div>
     </aside>
   );

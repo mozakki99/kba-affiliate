@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X, BookOpen } from 'lucide-react';
+import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X, BookOpen, UserPlus } from 'lucide-react';
 import { AffiliateUser } from '@/types';
 
 interface MobileBottomNavProps {
@@ -21,7 +21,8 @@ export function MobileBottomNav({ user }: MobileBottomNavProps) {
   ];
 
   const secondaryItems = [
-    { href: '/panduan', label: 'Panduan & Tutorial', icon: BookOpen, description: 'Sistem perpoinan, aturan insentif & tutorial promosi' },
+    { href: '/auth', label: 'Daftar / Login Akun', icon: UserPlus, description: 'Registrasi afiliator baru atau masuk akun' },
+    { href: '/panduan', label: 'Panduan & Tutorial', icon: BookOpen, description: 'Sistem perpoinan, aturan insentif & tutorial' },
     { href: '/kampanye', label: 'Kampanye Diskon', icon: Megaphone, description: 'Event promo terbatas diskon khusus' },
     { href: '/profil', label: 'Profil & Lynk.id', icon: UserCheck, description: 'Pengaturan username Lynk.id Anda' },
   ];
