@@ -113,6 +113,9 @@ export function useKBAStore() {
       });
     }
 
+    // Scaled viewer points: 10 viewers = 1 point, capped at max 200 points per task
+    const calculatedBonusViewerPoints = Math.min(Math.floor(totalViewerCount / 10), 200);
+
     const updatedTasks = state.tasks.map((task) => {
       if (task.id === taskId) {
         return {
@@ -123,8 +126,8 @@ export function useKBAStore() {
           platformsPosted: platformsPosted && platformsPosted.length > 0 ? platformsPosted : task.platformsPosted || [],
           platformViewers: platformViewers || task.platformViewers || {},
           viewerCountNumber: totalViewerCount,
-          bonusViewerPoints: totalViewerCount,
-          submissionViewerCount: totalViewerCount > 0 ? `${totalViewerCount} viewers` : task.submissionViewerCount,
+          bonusViewerPoints: calculatedBonusViewerPoints,
+          submissionViewerCount: totalViewerCount > 0 ? `${totalViewerCount} viewers (${calculatedBonusViewerPoints} Poin)` : task.submissionViewerCount,
           submissionUrl,
           submissionNote,
         };

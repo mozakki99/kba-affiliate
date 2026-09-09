@@ -19,6 +19,8 @@ export default function PeringkatPage() {
   ];
   const years = Array.from({ length: 2099 - 2024 + 1 }, (_, i) => String(2024 + i));
   const TOTAL_MONTHLY_BUDGET = 150000;
+  const MAX_CAP_PER_USER = 45000;
+
   const top10Activity = leaderboardActivity.slice(0, 10);
   const totalTop10Points = top10Activity.reduce((sum, item) => sum + item.score, 0);
 
@@ -26,11 +28,56 @@ export default function PeringkatPage() {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
   };
 
-  const getProportionalReward = (score: number) => {
-    if (totalTop10Points === 0) return 'Rp 0';
-    const reward = Math.round((score / totalTop10Points) * TOTAL_MONTHLY_BUDGET);
-    return formatRupiah(reward);
+  const calculateCappedRewardsMap = () => {
+    if (totalTop10Points === 0) return {};
+    const sharesMap: Record<number, number> = {};
+
+    let remainingBudget = TOTAL_MONTHLY_BUDGET;
+    let remainingIndices = top10Activity.map((_, i) => i);
+    const finalRewards: number[] = new Array(top10Activity.length).fill(0);
+
+    while (remainingIndices.length > 0) {
+      const currentRemainingPoints = remainingIndices.reduce((sum, idx) => sum + top10Activity[idx].score, 0);
+      if (currentRemainingPoints === 0) break;
+
+      let newlyCapped = false;
+      for (const idx of remainingIndices) {
+        const share = (top10Activity[idx].score / currentRemainingPoints) * remainingBudget;
+        if (share > MAX_CAP_PER_USER) {
+          finalRewards[idx] = MAX_CAP_PER_USER;
+          remainingBudget -= MAX_CAP_PER_USER;
+          remainingIndices = remainingIndices.filter((i) => i !== idx);
+          newlyCapped = true;
+          break;
+        }
+      }
+
+      if (!newlyCapped) {
+        for (const idx of remainingIndices) {
+          const share = (top10Activity[idx].score / currentRemainingPoints) * remainingBudget;
+          finalRewards[idx] = Math.round(share);
+        }
+        break;
+      }
+    }
+
+    top10Activity.forEach((item, idx) => {
+      sharesMap[item.rank] = finalRewards[idx];
+    });
+
+    return sharesMap;
   };
+
+  const rewardsMap = calculateCappedRewardsMap();
+
+  const getProportionalReward = (rank: number, score: number) => {
+    if (rank <= 10 && rewardsMap[rank] !== undefined) {
+      return formatRupiah(rewardsMap[rank]);
+    }
+    return 'Rp 0';
+  };
+
+  const [showPointsRulesInfo, setShowPointsRulesInfo] = useState<boolean>(false);
 
   if (!isLoaded) {
     return (
@@ -42,7 +89,7 @@ export default function PeringkatPage() {
 
   const currentData = activeTab === 'Keaktifan' ? leaderboardActivity : leaderboardSales;
   const userEntry = currentData.find((d) => d.isCurrentUser);
-  const userEstimatedReward = userEntry && activeTab === 'Keaktifan' ? getProportionalReward(userEntry.score) : 'Rp 0';
+  const userEstimatedReward = userEntry && activeTab === 'Keaktifan' ? getProportionalReward(userEntry.rank, userEntry.score) : 'Rp 0';
 
   return (
     <div className="min-h-screen bg-slate-50/70 text-slate-900 flex flex-col md:flex-row font-sans pb-20 md:pb-0">
@@ -91,17 +138,49 @@ export default function PeringkatPage() {
           </div>
 
           {/* Special Banner for Diligent Affiliates Rewards */}
-          <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-emerald-700 space-y-2">
-            <div className="flex items-center gap-2">
-              <Gift className="w-5 h-5 text-amber-400 shrink-0" />
-              <h2 className="text-sm sm:text-base font-bold">
-                Program Apresiasi Afiliator Teraktif Bulan {selectedMonth} {selectedYear}
-              </h2>
+          <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-emerald-700 space-y-3">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Gift className="w-5 h-5 text-amber-400 shrink-0" />
+                <h2 className="text-sm sm:text-base font-bold">
+                  Program Apresiasi Afiliator Teraktif Bulan {selectedMonth} {selectedYear}
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowPointsRulesInfo(!showPointsRulesInfo)}
+                className="bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-lg border border-white/20 transition-colors flex items-center gap-1.5"
+              >
+                <Info className="w-3.5 h-3.5 text-amber-300" />
+                <span>Info Perpoinan & Aturan</span>
+              </button>
             </div>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Kampus Bahasa Arab membagikan total insentif sebesar <strong>Rp 150.000 secara adil dan proporsional untuk 10 Afiliator Teraktif Bulan {selectedMonth} {selectedYear}</strong>. 
-              Nominal insentif setiap peserta dihitung otomatis berdasarkan rasio poin Anda terhadap total poin top 10.
+              Kampus Bahasa Arab membagikan total insentif sebesar <strong>Rp 150.000 secara adil & proporsional untuk 10 Afiliator Teraktif Bulan {selectedMonth} {selectedYear}</strong>. 
+              Nominal insentif setiap peserta dihitung otomatis berdasarkan rasio poin Anda terhadap total poin top 10 (dengan batas maksimal Rp 45.000/orang agar insentif terdistribusi merata).
             </p>
+
+            {/* Expandable Points Info Box */}
+            {showPointsRulesInfo && (
+              <div className="bg-white/10 backdrop-blur-xs p-4 rounded-xl border border-emerald-500/40 text-xs space-y-2 mt-3 animate-in fade-in duration-200">
+                <h3 className="font-bold text-amber-300 flex items-center gap-1.5 text-xs sm:text-sm">
+                  📌 Panduan Lengkap Sistem Perpoinan & Apresiasi KBA:
+                </h3>
+                <ul className="space-y-1.5 text-emerald-100 leading-relaxed list-disc list-inside">
+                  <li>
+                    <strong>Poin Rajin Posting (+10 Poin / Tugas)</strong>: Diperoleh otomatis setiap kali Anda menyelesaikan tugas promosi yang dirilis KBA.
+                  </li>
+                  <li>
+                    <strong>Poin Bonus Viewers (10 Viewers = 1 Poin)</strong>: Penonton postingan Anda dikonversi dengan rasio 10 viewers = 1 poin (maksimal <strong>+200 Poin per tugas</strong>).
+                  </li>
+                  <li>
+                    <strong>Perhitungan Insentif Proporsional</strong>: Total anggaran Rp 150.000 dibagikan secara adil berdasarkan porsi persentase poin Anda terhadap Top 10.
+                  </li>
+                  <li>
+                    <strong>Batas Maksimum (Cap Rp 45.000 / Orang)</strong>: Untuk mencegah monopoli jika ada postingan yang sangat viral, insentif per orang dibatasi maksimal Rp 45.000, dan sisa dananya otomatis dibagikan ke afiliator rajin lainnya di Top 10.
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Highlight User Banner */}
@@ -231,7 +310,7 @@ export default function PeringkatPage() {
                         <td className="py-3.5 px-4 sm:px-6 text-right">
                           {row.rank <= 10 ? (
                             <span className="bg-emerald-100 text-emerald-900 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-300">
-                              🎁 {getProportionalReward(row.score)}
+                              🎁 {getProportionalReward(row.rank, row.score)}
                             </span>
                           ) : (
                             <span className="text-slate-400 text-xs">-</span>
