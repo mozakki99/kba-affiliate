@@ -58,6 +58,9 @@ export default function HomePage() {
   const [selectedMonth, setSelectedMonth] = useState<string>('September 2026');
   const [displayLimit, setDisplayLimit] = useState<number>(5);
 
+  // Mobile Collapsible Header State
+  const [showMobileStats, setShowMobileStats] = useState(false);
+
   const addToast = (text: string, type: 'success' | 'error' | 'info') => {
     const id = `toast-${Date.now()}`;
     setToasts((prev) => [...prev, { id, type, text }]);
@@ -122,9 +125,6 @@ export default function HomePage() {
       setTimeout(() => setCopiedToday(false), 2500);
     }
   };
-
-  // Mobile Collapsible Header State
-  const [showMobileStats, setShowMobileStats] = useState(false);
 
   // Quick form state cleaned up in favor of multi-task modal checklist
 
