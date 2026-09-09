@@ -13,7 +13,7 @@ import {
   initialAffiliates,
 } from './mockData';
 
-const STORAGE_KEY = 'kba_affiliate_demo_state_v5';
+const STORAGE_KEY = 'kba_affiliate_strict_v7';
 
 interface AppState {
   user: AffiliateUser;
@@ -31,7 +31,7 @@ interface AppState {
 export function useKBAStore() {
   const [state, setState] = useState<AppState>({
     user: initialUser,
-    isLoggedIn: true,
+    isLoggedIn: false,
     isAdminLoggedIn: false,
     tasks: initialTasks,
     products: initialProducts,
@@ -52,7 +52,7 @@ export function useKBAStore() {
         setState((prev) => ({
           ...prev,
           user: parsed.user || initialUser,
-          isLoggedIn: parsed.isLoggedIn !== undefined ? parsed.isLoggedIn : true,
+          isLoggedIn: parsed.isLoggedIn !== undefined ? parsed.isLoggedIn : false,
           isAdminLoggedIn: parsed.isAdminLoggedIn !== undefined ? parsed.isAdminLoggedIn : false,
           tasks: parsed.tasks || initialTasks,
           products: parsed.products || initialProducts,
@@ -449,7 +449,7 @@ export function useKBAStore() {
     }
     setState({
       user: initialUser,
-      isLoggedIn: true,
+      isLoggedIn: false,
       isAdminLoggedIn: false,
       tasks: initialTasks,
       products: initialProducts,

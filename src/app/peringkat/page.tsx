@@ -87,7 +87,7 @@ export default function PeringkatPage() {
 
   const [showPointsRulesInfo, setShowPointsRulesInfo] = useState<boolean>(false);
 
-  if (!isLoaded) {
+  if (!isLoaded || !isLoggedIn) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 font-medium">
         Memuat peringkat...

@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useKBAStore } from '@/data/store';
 import { DesktopSidebar } from '@/components/layout/DesktopSidebar';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
@@ -24,9 +25,16 @@ import {
 import Link from 'next/link';
 
 export default function PanduanPage() {
-  const { user, isLoaded } = useKBAStore();
+  const router = useRouter();
+  const { user, isLoaded, isLoggedIn } = useKBAStore();
 
-  if (!isLoaded) {
+  useEffect(() => {
+    if (isLoaded && !isLoggedIn) {
+      router.replace('/auth');
+    }
+  }, [isLoaded, isLoggedIn, router]);
+
+  if (!isLoaded || !isLoggedIn) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center text-slate-500 font-medium">
         Memuat panduan...
