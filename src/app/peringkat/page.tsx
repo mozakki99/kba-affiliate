@@ -18,6 +18,19 @@ export default function PeringkatPage() {
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
   ];
   const years = Array.from({ length: 2099 - 2024 + 1 }, (_, i) => String(2024 + i));
+  const TOTAL_MONTHLY_BUDGET = 150000;
+  const top10Activity = leaderboardActivity.slice(0, 10);
+  const totalTop10Points = top10Activity.reduce((sum, item) => sum + item.score, 0);
+
+  const formatRupiah = (val: number) => {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+  };
+
+  const getProportionalReward = (score: number) => {
+    if (totalTop10Points === 0) return 'Rp 0';
+    const reward = Math.round((score / totalTop10Points) * TOTAL_MONTHLY_BUDGET);
+    return formatRupiah(reward);
+  };
 
   if (!isLoaded) {
     return (
@@ -29,6 +42,7 @@ export default function PeringkatPage() {
 
   const currentData = activeTab === 'Keaktifan' ? leaderboardActivity : leaderboardSales;
   const userEntry = currentData.find((d) => d.isCurrentUser);
+  const userEstimatedReward = userEntry && activeTab === 'Keaktifan' ? getProportionalReward(userEntry.score) : 'Rp 0';
 
   return (
     <div className="min-h-screen bg-slate-50/70 text-slate-900 flex flex-col md:flex-row font-sans pb-20 md:pb-0">
@@ -85,8 +99,8 @@ export default function PeringkatPage() {
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Bulan {selectedMonth} {selectedYear}</strong> (masing-masing Rp 15.000). 
-              Penilaian dihitung secara adil berdasarkan konsistensi publikasi edukasi harian Anda.
+              Kampus Bahasa Arab membagikan total insentif sebesar <strong>Rp 150.000 secara adil dan proporsional untuk 10 Afiliator Teraktif Bulan {selectedMonth} {selectedYear}</strong>. 
+              Nominal insentif setiap peserta dihitung otomatis berdasarkan rasio poin Anda terhadap total poin top 10.
             </p>
           </div>
 
@@ -106,7 +120,7 @@ export default function PeringkatPage() {
                   </h2>
                   <p className="text-xs text-slate-600 font-medium">
                     {activeTab === 'Keaktifan'
-                      ? `Total Skor Keaktifan: ${userEntry.score} Poin`
+                      ? `Total Skor Keaktifan: ${userEntry.score} Poin (${((userEntry.score / totalTop10Points) * 100).toFixed(1)}% dari Total Top 10)`
                       : `Penjualan Terverifikasi: ${userEntry.score} Transaksi (${userEntry.totalAmount})`}
                   </p>
                 </div>
@@ -115,7 +129,9 @@ export default function PeringkatPage() {
                 <p className="font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Masuk Top 10 Penerima Apresiasi
                 </p>
-                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Bulan {selectedMonth} {selectedYear})</p>
+                <p className="text-emerald-800 text-[11px]">
+                  Estimasi Insentif Proporsional: <strong>{userEstimatedReward}</strong>
+                </p>
               </div>
             </div>
           )}
@@ -151,10 +167,10 @@ export default function PeringkatPage() {
             <div className="p-3.5 bg-blue-50/60 border-b border-blue-100 text-xs text-blue-900 flex items-start gap-2.5">
               <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
               <div>
-                <p className="font-bold">Ketentuan Perhitungan Peringkat:</p>
+                <p className="font-bold">Ketentuan Perhitungan Peringkat & Apresiasi:</p>
                 <p className="text-blue-900 opacity-90 mt-0.5 leading-relaxed text-[11px] sm:text-xs">
                   {activeTab === 'Keaktifan'
-                    ? 'Poin keaktifan dihitung berdasarkan konsistensi publikasi tugas promosi harian yang disetujui.'
+                    ? 'Poin dihitung dari absensi postingan & jumlah viewers. Total insentif Rp 150.000 dibagikan otomatis & adil proporsional: (Poin Anda ÷ Total Poin Top 10) × Rp 150.000.'
                     : 'Penjualan dihitung berdasarkan komisi transaksi terverifikasi melalui link Lynk.id Anda.'}
                 </p>
               </div>
@@ -170,7 +186,7 @@ export default function PeringkatPage() {
                     <th className="py-3 px-4 sm:px-6 text-right">
                       {activeTab === 'Keaktifan' ? 'Skor Keaktifan' : 'Jumlah Penjualan'}
                     </th>
-                    {activeTab === 'Keaktifan' && <th className="py-3 px-4 sm:px-6 text-right">Bonus Rajin</th>}
+                    {activeTab === 'Keaktifan' && <th className="py-3 px-4 sm:px-6 text-right">Bonus Insentif (Proporsional)</th>}
                     {activeTab === 'Penjualan' && <th className="py-3 px-4 sm:px-6 text-right">Volume Penjualan</th>}
                   </tr>
                 </thead>
@@ -213,9 +229,9 @@ export default function PeringkatPage() {
 
                       {activeTab === 'Keaktifan' && (
                         <td className="py-3.5 px-4 sm:px-6 text-right">
-                          {row.isDiligentWinner ? (
+                          {row.rank <= 10 ? (
                             <span className="bg-emerald-100 text-emerald-900 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-300">
-                              🎁 {row.rewardAmount}
+                              🎁 {getProportionalReward(row.score)}
                             </span>
                           ) : (
                             <span className="text-slate-400 text-xs">-</span>
