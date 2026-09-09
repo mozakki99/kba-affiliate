@@ -2,9 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Megaphone, Package, Trophy, UserCheck, BookOpen, UserPlus } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Megaphone, Package, Trophy, UserCheck, BookOpen, UserPlus, LogOut, ShieldCheck } from 'lucide-react';
 import { AffiliateUser } from '@/types';
+import { useKBAStore } from '@/data/store';
 
 interface DesktopSidebarProps {
   user: AffiliateUser;
@@ -12,6 +13,13 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ user }: DesktopSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logoutUser } = useKBAStore();
+
+  const handleLogout = () => {
+    logoutUser();
+    router.push('/auth');
+  };
 
   const navItems = [
     { href: '/', label: 'Beranda', icon: Home },
@@ -70,24 +78,27 @@ export function DesktopSidebar({ user }: DesktopSidebarProps) {
         })}
       </nav>
 
-      {/* Footer Info */}
+      {/* Footer Info & Action Buttons */}
       <div className="p-4 border-t border-slate-100 text-xs text-slate-400 space-y-2">
-        <Link
-          href="/auth"
-          className="flex items-center justify-center gap-2 p-2 bg-blue-50 text-blue-800 rounded-lg hover:bg-blue-100 transition-colors font-bold text-xs border border-blue-200"
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 p-2.5 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors font-bold text-xs shadow-xs cursor-pointer"
         >
-          <UserPlus className="w-4 h-4 text-blue-700 shrink-0" />
-          <span>Daftar / Login Afiliator</span>
-        </Link>
+          <LogOut className="w-4 h-4 text-rose-600 shrink-0" />
+          <span>Keluar Akun (Logout)</span>
+        </button>
+
         <Link
           href="/admin"
-          className="flex items-center justify-center gap-2 p-2 bg-slate-900 text-amber-400 rounded-lg hover:bg-slate-800 transition-colors font-bold text-xs shadow-sm"
+          className="flex items-center justify-center gap-2 p-2 bg-slate-900 text-amber-400 rounded-xl hover:bg-slate-800 transition-colors font-bold text-xs shadow-sm"
         >
-          <span>🛡️ Portal Admin (Kelola)</span>
+          <ShieldCheck className="w-4 h-4 text-amber-400" />
+          <span>Portal Admin (Kelola)</span>
         </Link>
-        <div className="space-y-0.5 pt-1">
+
+        <div className="space-y-0.5 pt-1 text-center sm:text-left">
           <p className="font-medium text-slate-500">KBA Affiliate Portal v2.0</p>
-          <p>Lynk.id Username: {user.lynkIdUsername}</p>
+          <p>Lynk.id: {user.lynkIdUsername}</p>
         </div>
       </div>
     </aside>

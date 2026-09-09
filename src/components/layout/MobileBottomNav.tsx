@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X, BookOpen, UserPlus, ShieldCheck } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X, BookOpen, UserPlus, ShieldCheck, LogOut } from 'lucide-react';
 import { AffiliateUser } from '@/types';
+import { useKBAStore } from '@/data/store';
 
 interface MobileBottomNavProps {
   user: AffiliateUser;
@@ -12,7 +13,15 @@ interface MobileBottomNavProps {
 
 export function MobileBottomNav({ user }: MobileBottomNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logoutUser } = useKBAStore();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+  const handleLogout = () => {
+    logoutUser();
+    setShowMoreMenu(false);
+    router.push('/auth');
+  };
 
   const mainItems = [
     { href: '/', label: 'Beranda', icon: Home },
@@ -21,13 +30,11 @@ export function MobileBottomNav({ user }: MobileBottomNavProps) {
   ];
 
   const secondaryItems = [
-    { href: '/admin', label: '🛡️ Portal Admin Web', icon: ShieldCheck, description: 'Kelola pendaftaran, approve & generate akun WA' },
-    { href: '/auth', label: 'Daftar / Login Akun', icon: UserPlus, description: 'Registrasi afiliator baru atau masuk akun' },
+    { href: '/profil', label: 'Profil & Lynk.id', icon: UserCheck, description: 'Pengaturan username Lynk.id Anda' },
     { href: '/panduan', label: 'Panduan & Tutorial', icon: BookOpen, description: 'Sistem perpoinan, aturan insentif & tutorial' },
     { href: '/kampanye', label: 'Kampanye Diskon', icon: Megaphone, description: 'Event promo terbatas diskon khusus' },
-    { href: '/profil', label: 'Profil & Lynk.id', icon: UserCheck, description: 'Pengaturan username Lynk.id Anda' },
+    { href: '/admin', label: '🛡️ Portal Admin Web', icon: ShieldCheck, description: 'Kelola pendaftaran, approve & generate akun WA' },
   ];
-
 
   return (
     <>
@@ -121,6 +128,15 @@ export function MobileBottomNav({ user }: MobileBottomNavProps) {
                   </Link>
                 );
               })}
+
+              {/* Logout Button in Drawer */}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 p-3 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl font-bold text-sm transition-colors mt-3"
+              >
+                <LogOut className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>Keluar Akun (Logout)</span>
+              </button>
             </div>
           </div>
         </div>
