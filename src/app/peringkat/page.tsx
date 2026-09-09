@@ -255,9 +255,68 @@ export default function PeringkatPage() {
               </div>
             </div>
 
-            {/* Leaderboard Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs sm:text-sm">
+            {/* Mobile Leaderboard List (Mobile-Optimized Layout) */}
+            <div className="sm:hidden divide-y divide-slate-100">
+              {currentData.map((row) => (
+                <div
+                  key={row.rank}
+                  className={`p-3.5 flex items-center justify-between gap-2.5 transition-colors ${
+                    row.isCurrentUser ? 'bg-amber-500/15 font-bold text-slate-950' : 'hover:bg-slate-50 text-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
+                        row.rank === 1
+                          ? 'bg-amber-400 text-amber-950'
+                          : row.rank === 2
+                          ? 'bg-slate-200 text-slate-800'
+                          : row.rank === 3
+                          ? 'bg-amber-700/20 text-amber-900'
+                          : row.rank <= 10 && activeTab === 'Keaktifan'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      #{row.rank}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="font-bold text-xs truncate">{row.displayName}</span>
+                        {row.isCurrentUser && (
+                          <span className="bg-amber-500 text-slate-950 text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase shrink-0">
+                            Anda
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[11px] text-blue-900 font-semibold font-mono block">
+                        {activeTab === 'Keaktifan' ? `${row.score} Poin` : `${row.score} Transaksi`}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 text-right">
+                    {activeTab === 'Keaktifan' ? (
+                      row.rank <= 10 ? (
+                        <span className="bg-emerald-100 text-emerald-900 font-bold text-[11px] px-2 py-1 rounded-full border border-emerald-300 inline-block shadow-2xs">
+                          🎁 {getProportionalReward(row.rank, row.score)}
+                        </span>
+                      ) : (
+                        <span className="text-slate-400 text-xs">-</span>
+                      )
+                    ) : (
+                      <span className="font-mono text-emerald-700 font-bold text-xs">
+                        {row.totalAmount || '-'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Leaderboard Table (Tablet & Desktop Layout) */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full text-left text-xs sm:text-sm min-w-[640px]">
                 <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                   <tr>
                     <th className="py-3 px-4 sm:px-6 w-16">Peringkat</th>
