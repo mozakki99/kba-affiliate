@@ -19,6 +19,7 @@ import {
   DollarSign,
   Calculator,
   ArrowRight,
+  ExternalLink,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -61,14 +62,25 @@ export default function PanduanPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs">
-              <div className="bg-white/10 p-3 rounded-xl border border-white/15 space-y-1">
-                <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-extrabold flex items-center justify-center text-[11px] mb-1">
-                  1
-                </span>
-                <p className="font-bold text-amber-300">Set Username Lynk.id</p>
-                <p className="text-slate-200 text-[11px] leading-relaxed">
-                  Isi username Lynk.id Anda di menu <strong>Profil</strong> agar link komisi Anda siap digunakan.
-                </p>
+              <div className="bg-white/10 p-3 rounded-xl border border-white/15 space-y-1.5 flex flex-col justify-between">
+                <div>
+                  <span className="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-extrabold flex items-center justify-center text-[11px] mb-1">
+                    1
+                  </span>
+                  <p className="font-bold text-amber-300">Set Username Lynk.id</p>
+                  <p className="text-slate-200 text-[11px] leading-relaxed">
+                    Isi username Lynk.id Anda di menu <strong>Profil</strong> agar link komisi Anda siap digunakan.
+                  </p>
+                </div>
+                <a
+                  href="https://youtu.be/cL6d0-278VA"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-300 hover:text-amber-200 hover:underline pt-1"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                  <span>Lihat Video Tutorial YouTube ↗</span>
+                </a>
               </div>
 
               <div className="bg-white/10 p-3 rounded-xl border border-white/15 space-y-1">
