@@ -1084,65 +1084,25 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
 
         {/* TAB 5: KELOLA KAMPANYE */}
         {activeTab === 'kampanye' && (
-          <div className="space-y-4">
-            {/* Fitur Mendatang Notice Banner */}
-            <div className="p-4 bg-amber-50 border border-amber-300 rounded-2xl flex items-start gap-3 text-xs text-amber-950">
-              <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-extrabold text-sm text-amber-900">📌 Fitur Kampanye Diskon (Fitur Mendatang)</h3>
-                  <span className="px-2 py-0.5 bg-amber-200 text-amber-950 rounded text-[10px] font-black uppercase">
-                    Dalam Pengembangan Konsep
-                  </span>
-                </div>
-                <p className="leading-relaxed">
-                  Fitur ini disiapkan untuk merilis event promosi berseri terbatas (seperti <em>Flash Sale Pekan Umrah</em>) dengan tantangan berseri, poin ganda, dan bonus uang tunai untuk 10 afiliator terajin. Anda tetap dapat mencoba membuat draf simulasi kampanye di bawah ini untuk melihat gambaran alurnya.
-                </p>
-              </div>
+          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm text-center space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto shadow-inner">
+              <Sparkles className="w-8 h-8 text-amber-500" />
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-              <div>
-                <h2 className="font-bold text-base text-slate-900">Simulasi Kelola Kampanye Komisi</h2>
-                <p className="text-xs text-slate-500">
-                  Draf kampanye promo yang siap dirilis saat fitur ini aktif penuh.
-                </p>
-              </div>
-
-              <button
-                onClick={() => setShowNewCampaignModal(true)}
-                className="px-5 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-colors shadow-md flex items-center justify-center gap-2"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Buat Draf Kampanye Baru</span>
-              </button>
+            <div className="space-y-2 max-w-lg mx-auto">
+              <span className="inline-block px-3.5 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full text-xs font-black uppercase tracking-wider">
+                📌 Fitur Mendatang (Segera Hadir)
+              </span>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                Kelola Kampanye Afiliasi
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Fitur Kampanye saat ini sedang dalam tahap matang pengembangan konsep. Nanti di menu ini Admin dapat merilis event promosi berseri terbatas (seperti <em>Flash Sale Pekan Umrah</em>) dengan tantangan berseri, poin ganda, dan bonus uang tunai untuk 10 afiliator terajin.
+              </p>
             </div>
 
-            <div className="space-y-4">
-              {campaigns.map((camp) => (
-                <div key={camp.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                      <h3 className="font-extrabold text-base text-slate-900">{camp.title}</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Produk: {camp.productName}</p>
-                    </div>
-                    <span className="px-3 py-1 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-xs font-extrabold uppercase">
-                      {camp.status}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div className="p-3 bg-blue-50/60 border border-blue-200/80 rounded-xl">
-                      <span className="font-bold text-blue-950 block">Penawaran Promo:</span>
-                      <p className="text-slate-800 font-semibold">{camp.offer}</p>
-                    </div>
-                    <div className="p-3 bg-amber-50/60 border border-amber-200/80 rounded-xl">
-                      <span className="font-bold text-amber-950 block">Bonus Keaktifan:</span>
-                      <p className="text-slate-800 font-semibold">{camp.bonus}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl max-w-md mx-auto text-xs text-slate-500">
+              Menu ini akan aktif sepenuhnya saat konsep kampanye disahkan.
             </div>
           </div>
         )}
