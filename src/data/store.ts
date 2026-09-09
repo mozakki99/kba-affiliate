@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AffiliateUser, Product, Campaign, Task, LeaderboardEntry } from '@/types';
+import { AffiliateUser, Product, Campaign, Task, LeaderboardEntry, RegistrationApplicant } from '@/types';
 import {
   initialUser,
   initialProducts,
@@ -9,9 +9,11 @@ import {
   initialTasks,
   initialLeaderboardActivity,
   initialLeaderboardSales,
+  initialRegistrations,
+  initialAffiliates,
 } from './mockData';
 
-const STORAGE_KEY = 'kba_affiliate_demo_state_v4';
+const STORAGE_KEY = 'kba_affiliate_demo_state_v5';
 
 interface AppState {
   user: AffiliateUser;
@@ -21,6 +23,8 @@ interface AppState {
   campaigns: Campaign[];
   leaderboardActivity: LeaderboardEntry[];
   leaderboardSales: LeaderboardEntry[];
+  registrations: RegistrationApplicant[];
+  affiliates: AffiliateUser[];
 }
 
 export function useKBAStore() {
@@ -32,6 +36,8 @@ export function useKBAStore() {
     campaigns: initialCampaigns,
     leaderboardActivity: initialLeaderboardActivity,
     leaderboardSales: initialLeaderboardSales,
+    registrations: initialRegistrations,
+    affiliates: initialAffiliates,
   });
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,6 +52,10 @@ export function useKBAStore() {
           user: parsed.user || initialUser,
           isLoggedIn: parsed.isLoggedIn !== undefined ? parsed.isLoggedIn : true,
           tasks: parsed.tasks || initialTasks,
+          products: parsed.products || initialProducts,
+          campaigns: parsed.campaigns || initialCampaigns,
+          registrations: parsed.registrations || initialRegistrations,
+          affiliates: parsed.affiliates || initialAffiliates,
         }));
       }
     } catch (e) {
@@ -64,6 +74,10 @@ export function useKBAStore() {
           user: newState.user,
           isLoggedIn: newState.isLoggedIn,
           tasks: newState.tasks,
+          products: newState.products,
+          campaigns: newState.campaigns,
+          registrations: newState.registrations,
+          affiliates: newState.affiliates,
         })
       );
     } catch (e) {
@@ -117,14 +131,13 @@ export function useKBAStore() {
       });
     }
 
-    // Scaled viewer points: 10 viewers = 1 point, capped at max 200 points per task
     const calculatedBonusViewerPoints = Math.min(Math.floor(totalViewerCount / 10), 200);
 
     const updatedTasks = state.tasks.map((task) => {
       if (task.id === taskId) {
         return {
           ...task,
-          status: 'Selesai' as const, // TRUST SYSTEM: INSTANTLY FINISHED!
+          status: 'Selesai' as const,
           submittedAt: timeFormatted,
           isCompletedChecked,
           platformsPosted: platformsPosted && platformsPosted.length > 0 ? platformsPosted : task.platformsPosted || [],
@@ -139,7 +152,6 @@ export function useKBAStore() {
       return task;
     });
 
-    // Dual Point Accumulation Calculation
     const diligencePoints = updatedTasks
       .filter((t) => t.status === 'Selesai')
       .reduce((sum, t) => sum + (t.points || 0), 300);
@@ -159,16 +171,16 @@ export function useKBAStore() {
   };
 
   const registerUser = (userData: Partial<AffiliateUser>) => {
-    const newId = `KBA-${Math.floor(100 + Math.random() * 900)}`;
     const now = new Date();
-    const joinedDate = now.toISOString().split('T')[0];
+    const timeFormatted = `${now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}, ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`;
+    const regId = `REG-${Date.now().toString().slice(-5)}`;
 
-    const newUser: AffiliateUser = {
-      ...initialUser,
-      id: newId,
+    const newApplicant: RegistrationApplicant = {
+      id: regId,
+      registeredAt: timeFormatted,
       name: userData.name || 'Afiliator Baru',
-      email: userData.email || 'afiliator@kampusbahasaarab.com',
       phone: userData.phone || '08123456789',
+      email: userData.email || '',
       address: userData.address || '',
       age: userData.age || '',
       dailyActivity: userData.dailyActivity || '',
@@ -181,15 +193,114 @@ export function useKBAStore() {
       waAverageViewers: userData.waAverageViewers || '',
       otherSocialMedia: userData.otherSocialMedia || '',
       agreedToRules: userData.agreedToRules ?? true,
+      status: 'Pending',
+    };
+
+    const updatedRegs = [newApplicant, ...state.registrations];
+    saveState({ ...state, registrations: updatedRegs });
+    return newApplicant;
+  };
+
+  // ADMIN ACTION: Approve registration & generate credentials
+  const approveRegistration = (regId: string, customId?: string, customPassword?: string) => {
+    const targetReg = state.registrations.find((r) => r.id === regId);
+    if (!targetReg) return null;
+
+    const affiliateId = customId || `KBA-2026-${Math.floor(10 + Math.random() * 90)}`;
+    const password = customPassword || `kba${Math.floor(1000 + Math.random() * 9000)}`;
+    const joinedDate = new Date().toISOString().split('T')[0];
+
+    const newAffiliate: AffiliateUser = {
+      id: affiliateId,
+      name: targetReg.name,
+      email: targetReg.email || `${affiliateId.toLowerCase()}@kampusbahasaarab.com`,
+      phone: targetReg.phone,
+      instagram: targetReg.instagram || '',
+      tiktok: '',
+      waGroup: 'Grup Sahabat KBA Utama',
       joinedDate,
+      lynkIdUsername: targetReg.lynkIdUsername || 'afiliator',
       streakDays: 1,
       diligencePoints: 0,
       viewerPoints: 0,
       totalPoints: 0,
+      address: targetReg.address,
+      age: targetReg.age,
+      dailyActivity: targetReg.dailyActivity,
+      hasLynkId: targetReg.hasLynkId,
+      instagramFollowers: targetReg.instagramFollowers,
+      telegramUsername: targetReg.telegramUsername,
+      telegramFollowers: targetReg.telegramFollowers,
+      waAverageViewers: targetReg.waAverageViewers,
+      otherSocialMedia: targetReg.otherSocialMedia,
+      agreedToRules: targetReg.agreedToRules,
+      password,
+      statusAccount: 'Aktif',
     };
 
-    saveState({ ...state, user: newUser, isLoggedIn: true });
-    return newUser;
+    const updatedRegs = state.registrations.map((r) =>
+      r.id === regId
+        ? {
+            ...r,
+            status: 'Disetujui' as const,
+            approvedAffiliateId: affiliateId,
+            generatedPassword: password,
+          }
+        : r
+    );
+
+    const updatedAffiliates = [newAffiliate, ...state.affiliates];
+
+    saveState({
+      ...state,
+      registrations: updatedRegs,
+      affiliates: updatedAffiliates,
+    });
+
+    return { affiliate: newAffiliate, password };
+  };
+
+  // ADMIN ACTION: Reject registration
+  const rejectRegistration = (regId: string) => {
+    const updatedRegs = state.registrations.map((r) =>
+      r.id === regId ? { ...r, status: 'Ditolak' as const } : r
+    );
+    saveState({ ...state, registrations: updatedRegs });
+  };
+
+  // ADMIN ACTION: Add new task for all affiliates
+  const addNewTask = (newTaskData: Omit<Task, 'id' | 'status'>) => {
+    const newId = `task-${Date.now().toString().slice(-4)}`;
+    const createdTask: Task = {
+      ...newTaskData,
+      id: newId,
+      status: 'Belum dikerjakan',
+    };
+
+    const updatedTasks = [createdTask, ...state.tasks];
+    saveState({ ...state, tasks: updatedTasks });
+    return createdTask;
+  };
+
+  // ADMIN ACTION: Add new campaign
+  const addNewCampaign = (newCampaignData: Omit<Campaign, 'id'>) => {
+    const newId = `camp-${Date.now().toString().slice(-4)}`;
+    const createdCampaign: Campaign = {
+      ...newCampaignData,
+      id: newId,
+    };
+
+    const updatedCampaigns = [createdCampaign, ...state.campaigns];
+    saveState({ ...state, campaigns: updatedCampaigns });
+    return createdCampaign;
+  };
+
+  // ADMIN ACTION: Update affiliate profile
+  const updateAffiliateUser = (id: string, updates: Partial<AffiliateUser>) => {
+    const updatedAffiliates = state.affiliates.map((a) =>
+      a.id === id ? { ...a, ...updates } : a
+    );
+    saveState({ ...state, affiliates: updatedAffiliates });
   };
 
   const loginUser = (identity: string) => {
@@ -214,6 +325,8 @@ export function useKBAStore() {
       campaigns: initialCampaigns,
       leaderboardActivity: initialLeaderboardActivity,
       leaderboardSales: initialLeaderboardSales,
+      registrations: initialRegistrations,
+      affiliates: initialAffiliates,
     });
   };
 
@@ -224,6 +337,11 @@ export function useKBAStore() {
     updateUserProfile,
     submitTaskChecklist,
     registerUser,
+    approveRegistration,
+    rejectRegistration,
+    addNewTask,
+    addNewCampaign,
+    updateAffiliateUser,
     loginUser,
     logoutUser,
     resetDemoState,

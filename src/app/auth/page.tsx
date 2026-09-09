@@ -106,7 +106,7 @@ export default function AuthPage() {
     });
 
     setRegisteredUser({ id: created.id, name: created.name });
-    addToast('Pendaftaran Afiliator KBA Berhasil!', 'success');
+    addToast('Pendaftaran Afiliator Berhasil Dikirim!', 'success');
   };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -143,22 +143,36 @@ export default function AuthPage() {
               <CheckCircle2 className="w-10 h-10 text-emerald-600" />
             </div>
             <div className="space-y-1">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Ahlan wa Sahlan, {registeredUser.name}!</h2>
-              <p className="text-xs sm:text-sm text-slate-600">Pendaftaran Afiliator Anda telah berhasil disetujui.</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Alhamdulillah, {registeredUser.name}!</h2>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Formulir pendaftaran Afiliator Anda telah kami terima dengan ID <span className="font-mono font-bold text-slate-900">{registeredUser.id}</span>.
+              </p>
             </div>
 
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl max-w-sm mx-auto space-y-1 text-xs">
-              <span className="text-emerald-800 font-semibold block">ID Afiliator Resmi Anda:</span>
-              <span className="text-lg font-mono font-extrabold text-emerald-950 block">{registeredUser.id}</span>
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-950 space-y-1.5 leading-relaxed">
+              <span className="font-bold block text-amber-900 flex items-center gap-1">
+                <Info className="w-4 h-4 text-amber-600" /> Langkah Selanjutnya:
+              </span>
+              <p>
+                Admin Kampus Bahasa Arab akan meninjau pendaftaran Anda dan penerbitan <strong>ID Afiliator & Password</strong> akan dikirimkan langsung ke nomor WhatsApp Anda (<strong>{formData.phone}</strong>).
+              </p>
             </div>
 
-            <button
-              onClick={() => router.push('/')}
-              className="w-full sm:w-auto px-8 py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-sm transition-colors flex items-center justify-center gap-2 mx-auto shadow-md"
-            >
-              <span>Masuk ke Dashboard Afiliasi</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                onClick={() => setRegisteredUser(null)}
+                className="flex-1 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"
+              >
+                Kembali ke Halaman Login
+              </button>
+              <button
+                onClick={() => router.push('/')}
+                className="flex-1 px-6 py-3 bg-blue-800 hover:bg-blue-900 text-white font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 shadow-md"
+              >
+                <span>Lihat Dashboard Demo</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         ) : (
           <div className="bg-white rounded-2xl shadow-xl border border-slate-200/90 overflow-hidden">

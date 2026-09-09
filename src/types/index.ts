@@ -22,7 +22,35 @@ export interface AffiliateUser {
   waAverageViewers?: string;
   otherSocialMedia?: string;
   agreedToRules?: boolean;
+  password?: string;
+  statusAccount?: 'Aktif' | 'Nonaktif';
 }
+
+export type RegistrationStatus = 'Pending' | 'Disetujui' | 'Ditolak';
+
+export interface RegistrationApplicant {
+  id: string; // e.g. "REG-17258000"
+  registeredAt: string; // e.g. "09 Sep 2026, 15:10 WIB"
+  name: string;
+  phone: string;
+  email?: string;
+  address: string;
+  age: string;
+  dailyActivity: string;
+  hasLynkId: boolean;
+  lynkIdUsername: string;
+  instagram?: string;
+  instagramFollowers?: string;
+  telegramUsername?: string;
+  telegramFollowers?: string;
+  waAverageViewers?: string;
+  otherSocialMedia?: string;
+  agreedToRules: boolean;
+  status: RegistrationStatus;
+  approvedAffiliateId?: string; // e.g. "KBA-2026-005"
+  generatedPassword?: string;
+}
+
 
 export type TaskStatus = 'Belum dikerjakan' | 'Selesai' | 'Terlewat' | 'Terkunci';
 

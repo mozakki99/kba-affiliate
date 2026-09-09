@@ -77,7 +77,13 @@ export function DesktopSidebar({ user }: DesktopSidebarProps) {
           className="flex items-center justify-center gap-2 p-2 bg-blue-50 text-blue-800 rounded-lg hover:bg-blue-100 transition-colors font-bold text-xs border border-blue-200"
         >
           <UserPlus className="w-4 h-4 text-blue-700 shrink-0" />
-          <span>Daftar / Login Akun Baru</span>
+          <span>Daftar / Login Afiliator</span>
+        </Link>
+        <Link
+          href="/admin"
+          className="flex items-center justify-center gap-2 p-2 bg-slate-900 text-amber-400 rounded-lg hover:bg-slate-800 transition-colors font-bold text-xs shadow-sm"
+        >
+          <span>🛡️ Portal Admin (Kelola)</span>
         </Link>
         <div className="space-y-0.5 pt-1">
           <p className="font-medium text-slate-500">KBA Affiliate Portal v2.0</p>
@@ -87,3 +93,4 @@ export function DesktopSidebar({ user }: DesktopSidebarProps) {
     </aside>
   );
 }
+
