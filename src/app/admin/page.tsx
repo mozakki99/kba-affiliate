@@ -25,9 +25,16 @@ import {
   Eye,
   FileText,
   Clock,
-  ArrowUpRight,
+  Package,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  Edit3,
+  Check,
+  AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Product, ProductCategory } from '@/types';
 
 export default function AdminPage() {
   const {
@@ -40,14 +47,15 @@ export default function AdminPage() {
     rejectRegistration,
     addNewTask,
     addNewCampaign,
-    updateAffiliateUser,
+    addNewProduct,
+    updateProduct,
     resetDemoState,
   } = useKBAStore();
 
-  const [activeTab, setActiveTab] = useState<'pendaftaran' | 'afiliator' | 'tugas' | 'kampanye'>('pendaftaran');
+  const [activeTab, setActiveTab] = useState<'pendaftaran' | 'afiliator' | 'tugas' | 'produk' | 'kampanye'>('pendaftaran');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Search & Filter
+  // Search & Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [regFilter, setRegFilter] = useState<'Semua' | 'Pending' | 'Disetujui' | 'Ditolak'>('Pending');
 
@@ -55,6 +63,11 @@ export default function AdminPage() {
   const [selectedRegId, setSelectedRegId] = useState<string | null>(null);
   const [customAffId, setCustomAffId] = useState('');
   const [customPassword, setCustomPassword] = useState('');
+
+  // --- KELOLA TUGAS STATES (DATE FILTER & PAGINATION) ---
+  const [taskDateFilter, setTaskDateFilter] = useState<string>('Semua Tanggal');
+  const [taskPage, setTaskPage] = useState<number>(1);
+  const tasksPerPage = 5;
 
   // New Task Form Modal
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
@@ -64,14 +77,35 @@ export default function AdminPage() {
     productName: products[0]?.title || 'Ebook Percakapan Umrah',
     channel: 'WhatsApp Status' as any,
     type: 'Rutin' as any,
-    deadline: 'Hari ini, 23:59 WIB',
+    publishDate: '2026-09-10', // Terbit tanggal
     points: 40,
     telegramMaterialUrl: '',
     caption: '',
-    instructionsText: '1. Salin teks promosi.\n2. Unggah ke WhatsApp Status.\n3. Centang absensi di portal.',
+    instructionsText: '1. Salin naskah promosi.\n2. Unggah ke WhatsApp Status.\n3. Centang absensi di portal.',
   });
 
-  // New Campaign Modal
+  // --- KELOLA PRODUK & MATERI STATES ---
+  const [showNewProductModal, setShowNewProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const [newProduct, setNewProduct] = useState({
+    title: '',
+    slug: '',
+    category: 'Ebook & Kamus' as ProductCategory,
+    priceSample: 'Rp 99.000',
+    commissionSample: 'Rp 35.000 / penjualan',
+    priceNumber: 99000,
+    commissionNumber: 35000,
+    targetAudience: 'Penuntut ilmu & pembelajar bahasa Arab harian.',
+    benefitsText: '1. Panduan dialog lengkap\n2. Audio pengucapan asli native speaker',
+    contentsText: 'Bab 1: Dialog Dasar\nBab 2: Kosakata Penting',
+    availabilityStatus: 'Tersedia' as const,
+    telegramChannelUrl: '',
+    copywritingTitle: 'Narasi Promo Perdana',
+    copywritingContent: 'Dapatkan materi eksklusif persembahan Kampus Bahasa Arab...',
+  });
+
+  // --- KELOLA KAMPANYE STATES ---
   const [showNewCampaignModal, setShowNewCampaignModal] = useState(false);
   const [newCampaign, setNewCampaign] = useState({
     title: '',
@@ -120,7 +154,7 @@ export default function AdminPage() {
     }
   };
 
-  // Generate WhatsApp Message Link for Sending Credentials
+  // WA Credentials Link Generator
   const getWACredentialsLink = (reg: any) => {
     const phone = reg.phone.replace(/[^0-9]/g, '');
     const formattedPhone = phone.startsWith('0') ? `62${phone.slice(1)}` : phone;
@@ -138,12 +172,20 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
   };
 
-  // Add Task Submit
+  // Create New Task Submit (with publishDate)
   const handleCreateTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.title.trim()) return addToast('Isikan judul tugas.', 'error');
 
     const selectedProd = products.find((p) => p.id === newTask.productId);
+    const pubDateObj = new Date(newTask.publishDate || Date.now());
+    const formattedPubDate = pubDateObj.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+
+    const deadlineText = `Terbit ${formattedPubDate} s/d 23:59 WIB`;
 
     addNewTask({
       title: newTask.title.trim(),
@@ -151,15 +193,66 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
       productName: selectedProd?.title || newTask.productName,
       channel: newTask.channel,
       type: newTask.type,
-      deadline: newTask.deadline,
-      points: Number(newTask.points) || 30,
+      publishDate: newTask.publishDate,
+      deadline: deadlineText,
+      points: Number(newTask.points) || 40,
       telegramMaterialUrl: newTask.telegramMaterialUrl.trim() || 'https://t.me/materi_kba_official',
       caption: newTask.caption.trim(),
       instructions: newTask.instructionsText.split('\n').filter((l) => l.trim().length > 0),
     });
 
-    addToast('Tugas baru berhasil diterbitkan untuk seluruh afiliator!', 'success');
+    addToast(`Tugas baru berhasil diterbitkan untuk tanggal ${formattedPubDate}!`, 'success');
     setShowNewTaskModal(false);
+  };
+
+  // Product Submit Handlers
+  const handleCreateProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProduct.title.trim()) return addToast('Isikan nama produk.', 'error');
+
+    const created = addNewProduct({
+      title: newProduct.title.trim(),
+      slug: newProduct.slug.trim() || newProduct.title.toLowerCase().replace(/\s+/g, '-'),
+      category: newProduct.category,
+      priceSample: newProduct.priceSample,
+      commissionSample: newProduct.commissionSample,
+      priceNumber: newProduct.priceNumber,
+      commissionNumber: newProduct.commissionNumber,
+      targetAudience: newProduct.targetAudience,
+      benefits: newProduct.benefitsText.split('\n').filter((b) => b.trim().length > 0),
+      contents: newProduct.contentsText.split('\n').filter((c) => c.trim().length > 0),
+      faq: [{ question: 'Apakah dapat diakses di smartphone?', answer: 'Ya, kompatibel penuh.' }],
+      availabilityStatus: newProduct.availabilityStatus,
+      lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+      telegramChannelUrl: newProduct.telegramChannelUrl || 'https://t.me/materi_kba_official',
+      generalCopywriting: [
+        {
+          id: `copy-${Date.now()}`,
+          title: newProduct.copywritingTitle || 'Narasi Promo Utama',
+          content: newProduct.copywritingContent || newProduct.title,
+        },
+      ],
+    });
+
+    addToast(`Produk "${created.title}" berhasil ditambahkan!`, 'success');
+    setShowNewProductModal(false);
+  };
+
+  const handleUpdateProductSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+
+    updateProduct(editingProduct.id, {
+      title: editingProduct.title,
+      priceSample: editingProduct.priceSample,
+      commissionSample: editingProduct.commissionSample,
+      availabilityStatus: editingProduct.availabilityStatus,
+      telegramChannelUrl: editingProduct.telegramChannelUrl,
+      lastUpdated: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+    });
+
+    addToast(`Produk "${editingProduct.title}" berhasil diperbarui!`, 'success');
+    setEditingProduct(null);
   };
 
   // Add Campaign Submit
@@ -193,6 +286,21 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
     addToast('Kampanye baru berhasil dibuat!', 'success');
     setShowNewCampaignModal(false);
   };
+
+  // --- FILTER & PAGINATION FOR TUGAS ---
+  const filteredTasks = tasks.filter((t) => {
+    const matchesSearch =
+      t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      t.channel.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (taskDateFilter === 'Semua Tanggal') return matchesSearch;
+    if (taskDateFilter === 'Hari Ini') return matchesSearch && (t.deadline.includes('Hari ini') || (t.publishDate && t.publishDate.includes('2026-09-09')));
+    return matchesSearch && t.publishDate === taskDateFilter;
+  });
+
+  const totalTaskPages = Math.ceil(filteredTasks.length / tasksPerPage) || 1;
+  const paginatedTasks = filteredTasks.slice((taskPage - 1) * tasksPerPage, taskPage * tasksPerPage);
 
   // Filtered Registrations
   const filteredRegs = registrations.filter((r) => {
@@ -257,14 +365,14 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
         <div className="bg-white rounded-2xl p-2 shadow-sm border border-slate-200 flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('pendaftaran')}
-            className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[130px] py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
               activeTab === 'pendaftaran'
                 ? 'bg-blue-800 text-white shadow'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <UserCheck className="w-4 h-4" />
-            <span>Pendaftaran Baru</span>
+            <span>Pendaftaran</span>
             {pendingCount > 0 && (
               <span className="px-2 py-0.5 bg-amber-400 text-slate-950 rounded-full text-xs font-extrabold animate-pulse">
                 {pendingCount}
@@ -274,19 +382,19 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
 
           <button
             onClick={() => setActiveTab('afiliator')}
-            className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[130px] py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
               activeTab === 'afiliator'
                 ? 'bg-blue-800 text-white shadow'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <Users className="w-4 h-4" />
-            <span>Kelola Afiliator ({affiliates.length})</span>
+            <span>Afiliator ({affiliates.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('tugas')}
-            className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[130px] py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
               activeTab === 'tugas'
                 ? 'bg-blue-800 text-white shadow'
                 : 'text-slate-600 hover:bg-slate-100'
@@ -297,8 +405,20 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </button>
 
           <button
+            onClick={() => setActiveTab('produk')}
+            className={`flex-1 min-w-[130px] py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+              activeTab === 'produk'
+                ? 'bg-blue-800 text-white shadow'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            <Package className="w-4 h-4" />
+            <span>Produk & Materi ({products.length})</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('kampanye')}
-            className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+            className={`flex-1 min-w-[130px] py-3 px-3 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
               activeTab === 'kampanye'
                 ? 'bg-blue-800 text-white shadow'
                 : 'text-slate-600 hover:bg-slate-100'
@@ -377,7 +497,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
               </div>
             </div>
 
-            {/* Registration Applicants List */}
+            {/* Applicants List */}
             {filteredRegs.length === 0 ? (
               <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto" />
@@ -417,7 +537,6 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                         </p>
                       </div>
 
-                      {/* Approved Credentials Badge */}
                       {reg.status === 'Disetujui' && (
                         <div className="p-2.5 bg-emerald-50 rounded-xl border border-emerald-200 text-xs flex items-center gap-3">
                           <div>
@@ -439,9 +558,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                       )}
                     </div>
 
-                    {/* Applicant Form Detail Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                      {/* Identity */}
                       <div className="space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-100">
                         <span className="font-bold text-slate-700 block uppercase text-[10px]">Identitas & Kontak</span>
                         <p className="text-slate-800">📱 WA: <span className="font-mono font-bold text-blue-900">{reg.phone}</span></p>
@@ -450,7 +567,6 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                         <p className="text-slate-700 text-[11px] line-clamp-2">📍 {reg.address}</p>
                       </div>
 
-                      {/* Lynk.id & Payout */}
                       <div className="space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-100">
                         <span className="font-bold text-slate-700 block uppercase text-[10px]">Status Lynk.id (Komisi)</span>
                         <p className="text-slate-800">
@@ -472,7 +588,6 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                         )}
                       </div>
 
-                      {/* Social Media & Reach */}
                       <div className="space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-100">
                         <span className="font-bold text-slate-700 block uppercase text-[10px]">Medsos & WA Viewers</span>
                         <p className="text-slate-800">📸 Instagram: <span className="font-semibold">{reg.instagram || '-'}</span> ({reg.instagramFollowers || '0'} followers)</p>
@@ -481,7 +596,6 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
                       </div>
                     </div>
 
-                    {/* Action Bar for Pending Applicant */}
                     {reg.status === 'Pending' && (
                       <div className="pt-2 flex items-center justify-end gap-3 border-t border-slate-100">
                         <button
@@ -580,14 +694,14 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </div>
         )}
 
-        {/* TAB 3: KELOLA TUGAS */}
+        {/* TAB 3: KELOLA TUGAS (WITH DATE FILTER & PAGINATION) */}
         {activeTab === 'tugas' && (
           <div className="space-y-4">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
               <div>
-                <h2 className="font-bold text-base text-slate-900">Daftar Tugas Afiliator</h2>
+                <h2 className="font-bold text-base text-slate-900">Kelola & Penjadwalan Tugas</h2>
                 <p className="text-xs text-slate-500">
-                  Seluruh tugas yang tampil di menu /tugas milik afiliator.
+                  Atur tanggal terbit tugas. Di portal afiliator, tugas terbit mulai tanggal tersebut s/d 23:59 WIB.
                 </p>
               </div>
 
@@ -600,39 +714,200 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tasks.map((task) => (
-                <div key={task.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="px-2.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-full text-[10px] font-bold">
-                      {task.type} • {task.channel}
-                    </span>
-                    <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                      +{task.points} Poin
-                    </span>
+            {/* Date Filter & Search Control */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 justify-between items-center text-xs">
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                <input
+                  type="text"
+                  placeholder="Cari judul tugas / produk..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setTaskPage(1);
+                  }}
+                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center gap-1.5 text-slate-700 font-bold">
+                  <Filter className="w-4 h-4 text-blue-700" />
+                  <span>Terbit Tanggal:</span>
+                </div>
+                <select
+                  value={taskDateFilter}
+                  onChange={(e) => {
+                    setTaskDateFilter(e.target.value);
+                    setTaskPage(1);
+                  }}
+                  className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-blue-900 outline-none"
+                >
+                  <option value="Semua Tanggal">Semua Tanggal</option>
+                  <option value="Hari Ini">Hari Ini (09 Sep 2026)</option>
+                  <option value="2026-09-10">10 Sep 2026 (Besok)</option>
+                  <option value="2026-09-11">11 Sep 2026</option>
+                  <option value="2026-09-12">12 Sep 2026</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Paginated Tasks Grid */}
+            {paginatedTasks.length === 0 ? (
+              <div className="bg-white p-12 rounded-2xl border border-slate-200 text-center space-y-2">
+                <Layers className="w-10 h-10 text-slate-300 mx-auto" />
+                <p className="text-slate-600 text-sm font-medium">Tidak ada tugas ditemukan untuk filter ini.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {paginatedTasks.map((task) => (
+                  <div key={task.id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="px-2.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-full text-[10px] font-bold">
+                        {task.type} • {task.channel}
+                      </span>
+                      <span className="text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        +{task.points} Poin
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-sm text-slate-900">{task.title}</h3>
+                    <p className="text-xs text-slate-500">Produk: {task.productName}</p>
+
+                    <div className="p-2.5 bg-amber-50/70 border border-amber-200 rounded-xl text-xs flex items-center justify-between text-amber-950">
+                      <span className="font-semibold flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5 text-amber-600" />
+                        Jadwal Terbit:
+                      </span>
+                      <span className="font-bold font-mono text-amber-900">{task.deadline}</span>
+                    </div>
+
+                    {task.caption && (
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-700 font-mono line-clamp-3">
+                        {task.caption}
+                      </div>
+                    )}
+
+                    <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+                      <span className="font-mono text-[11px]">ID: {task.id}</span>
+                      {task.telegramMaterialUrl && (
+                        <a
+                          href={task.telegramMaterialUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-700 font-bold hover:underline flex items-center gap-1"
+                        >
+                          Material Telegram <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            {totalTaskPages > 1 && (
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between text-xs font-semibold">
+                <span className="text-slate-500">
+                  Menampilkan Halaman <strong className="text-slate-900">{taskPage}</strong> dari <strong className="text-slate-900">{totalTaskPages}</strong> ({filteredTasks.length} tugas)
+                </span>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    disabled={taskPage === 1}
+                    onClick={() => setTaskPage((p) => Math.max(p - 1, 1))}
+                    className="p-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    disabled={taskPage === totalTaskPages}
+                    onClick={() => setTaskPage((p) => Math.min(p + 1, totalTaskPages))}
+                    className="p-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: KELOLA PRODUK & MATERI (FULL FEATURED LIKE AFFILIATE PORTAL) */}
+        {activeTab === 'produk' && (
+          <div className="space-y-4">
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+              <div>
+                <h2 className="font-bold text-base text-slate-900">Katalog Produk & Materi Promosi</h2>
+                <p className="text-xs text-slate-500">
+                  Kelola produk digital, komisi sales, naskah copywriting, dan link channel Telegram materi.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowNewProductModal(true)}
+                className="px-5 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold transition-colors shadow-md flex items-center justify-center gap-2"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Tambah Produk Baru</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {products.map((prod) => (
+                <div key={prod.id} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded-full text-[10px] font-bold">
+                          {prod.category}
+                        </span>
+                        <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded-full text-[10px] font-extrabold uppercase">
+                          {prod.availabilityStatus}
+                        </span>
+                      </div>
+                      <h3 className="font-extrabold text-base text-slate-900 mt-1">{prod.title}</h3>
+                      <p className="text-xs font-mono text-slate-500">Slug: {prod.slug}</p>
+                    </div>
+
+                    <button
+                      onClick={() => setEditingProduct(prod)}
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 self-start sm:self-auto"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                      <span>Edit Produk</span>
+                    </button>
                   </div>
 
-                  <h3 className="font-bold text-sm text-slate-900">{task.title}</h3>
-                  <p className="text-xs text-slate-500">Produk: {task.productName}</p>
-
-                  {task.caption && (
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-[11px] text-slate-700 font-mono line-clamp-3">
-                      {task.caption}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                      <span className="text-[10px] text-slate-500 font-bold block uppercase">Harga & Komisi</span>
+                      <p className="text-slate-900 font-bold">Harga: {prod.priceSample}</p>
+                      <p className="text-emerald-700 font-extrabold">Komisi: {prod.commissionSample}</p>
                     </div>
-                  )}
 
-                  <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
-                    <span>Deadline: {task.deadline}</span>
-                    {task.telegramMaterialUrl && (
-                      <a
-                        href={task.telegramMaterialUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-700 font-bold hover:underline flex items-center gap-1"
-                      >
-                        Material Telegram <ExternalLink className="w-3 h-3" />
-                      </a>
-                    )}
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                      <span className="text-[10px] text-slate-500 font-bold block uppercase">Target Audience & Manfaat</span>
+                      <p className="text-slate-700 line-clamp-2">{prod.targetAudience}</p>
+                    </div>
+
+                    <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-xl space-y-1">
+                      <span className="text-[10px] text-blue-900 font-bold block uppercase">Material & Telegram</span>
+                      <p className="text-xs text-blue-950 font-medium truncate">
+                        {prod.generalCopywriting?.length || 0} Narasi Promosi Terverifikasi
+                      </p>
+                      {prod.telegramChannelUrl && (
+                        <a
+                          href={prod.telegramChannelUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-bold text-blue-800 hover:underline flex items-center gap-1 text-xs pt-1"
+                        >
+                          Channel Telegram <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -640,7 +915,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
           </div>
         )}
 
-        {/* TAB 4: KELOLA KAMPANYE */}
+        {/* TAB 5: KELOLA KAMPANYE */}
         {activeTab === 'kampanye' && (
           <div className="space-y-4">
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between sm:items-center gap-4">
@@ -752,7 +1027,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
         </div>
       )}
 
-      {/* NEW TASK MODAL */}
+      {/* NEW TASK MODAL (WITH RELEASE DATE) */}
       {showNewTaskModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
           <form
@@ -760,7 +1035,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
             className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-base text-slate-900">Buat Tugas Afiliator Baru</h3>
+              <h3 className="font-extrabold text-base text-slate-900">Buat & Jadwalkan Tugas Baru</h3>
               <button type="button" onClick={() => setShowNewTaskModal(false)} className="text-slate-400">
                 <XCircle className="w-5 h-5" />
               </button>
@@ -780,18 +1055,14 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-slate-700">Produk Terkait</label>
-                <select
-                  value={newTask.productId}
-                  onChange={(e) => setNewTask({ ...newTask, productId: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
-                >
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.title}
-                    </option>
-                  ))}
-                </select>
+                <label className="font-bold text-slate-700">Terbit Tanggal (Release Date) *</label>
+                <input
+                  type="date"
+                  required
+                  value={newTask.publishDate}
+                  onChange={(e) => setNewTask({ ...newTask, publishDate: e.target.value })}
+                  className="w-full px-3 py-2 bg-white border border-blue-300 rounded-xl outline-none font-bold text-blue-900"
+                />
               </div>
 
               <div className="space-y-1">
@@ -810,22 +1081,27 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
 
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="space-y-1">
+                <label className="font-bold text-slate-700">Produk Terkait</label>
+                <select
+                  value={newTask.productId}
+                  onChange={(e) => setNewTask({ ...newTask, productId: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                >
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1">
                 <label className="font-bold text-slate-700">Poin Rajin (Dasar)</label>
                 <input
                   type="number"
                   value={newTask.points}
                   onChange={(e) => setNewTask({ ...newTask, points: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700">Deadline Tampil</label>
-                <input
-                  type="text"
-                  value={newTask.deadline}
-                  onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-emerald-800"
                 />
               </div>
             </div>
@@ -862,9 +1138,208 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
               </button>
               <button
                 type="submit"
+                className="flex-1 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>Terbitkan Tugas</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* NEW PRODUCT MODAL */}
+      {showNewProductModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <form
+            onSubmit={handleCreateProduct}
+            className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto"
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="font-extrabold text-base text-slate-900">Tambah Produk & Materi Baru</h3>
+              <button type="button" onClick={() => setShowNewProductModal(false)} className="text-slate-400">
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-1 text-xs">
+              <label className="font-bold text-slate-700">Nama Produk *</label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Ebook Percakapan Bahasa Arab Mandiri"
+                value={newProduct.title}
+                onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Kategori Produk</label>
+                <select
+                  value={newProduct.category}
+                  onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value as any })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                >
+                  <option value="Ebook & Kamus">Ebook & Kamus</option>
+                  <option value="Kelas">Kelas Digital</option>
+                  <option value="Produk digital lainnya">Produk Digital Lainnya</option>
+                  <option value="Materi gratis">Materi Gratis</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Status Ketersediaan</label>
+                <select
+                  value={newProduct.availabilityStatus}
+                  onChange={(e) => setNewProduct({ ...newProduct, availabilityStatus: e.target.value as any })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+                >
+                  <option value="Tersedia">Tersedia</option>
+                  <option value="Stok Terbatas">Stok Terbatas</option>
+                  <option value="Pendaftaran Dibuka">Pendaftaran Dibuka</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Harga Sampel</label>
+                <input
+                  type="text"
+                  placeholder="Rp 99.000"
+                  value={newProduct.priceSample}
+                  onChange={(e) => setNewProduct({ ...newProduct, priceSample: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Komisi Sales</label>
+                <input
+                  type="text"
+                  placeholder="Rp 35.000 / penjualan"
+                  value={newProduct.commissionSample}
+                  onChange={(e) => setNewProduct({ ...newProduct, commissionSample: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-emerald-800"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1 text-xs">
+              <label className="font-bold text-slate-700">Link Telegram Material</label>
+              <input
+                type="text"
+                placeholder="https://t.me/materi_kba_channel"
+                value={newProduct.telegramChannelUrl}
+                onChange={(e) => setNewProduct({ ...newProduct, telegramChannelUrl: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              />
+            </div>
+
+            <div className="pt-2 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowNewProductModal(false)}
+                className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
                 className="flex-1 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md"
               >
-                Terbitkan Tugas
+                Simpan Produk
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* EDIT PRODUCT MODAL */}
+      {editingProduct && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <form
+            onSubmit={handleUpdateProductSubmit}
+            className="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl border border-slate-200"
+          >
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="font-extrabold text-base text-slate-900">Edit Produk & Link Materi</h3>
+              <button type="button" onClick={() => setEditingProduct(null)} className="text-slate-400">
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-1 text-xs">
+              <label className="font-bold text-slate-700">Nama Produk *</label>
+              <input
+                type="text"
+                required
+                value={editingProduct.title}
+                onChange={(e) => setEditingProduct({ ...editingProduct, title: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Harga Sampel</label>
+                <input
+                  type="text"
+                  value={editingProduct.priceSample}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, priceSample: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-bold text-slate-700">Komisi Sales</label>
+                <input
+                  type="text"
+                  value={editingProduct.commissionSample}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, commissionSample: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-emerald-800"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1 text-xs">
+              <label className="font-bold text-slate-700">Status Ketersediaan</label>
+              <select
+                value={editingProduct.availabilityStatus}
+                onChange={(e) => setEditingProduct({ ...editingProduct, availabilityStatus: e.target.value as any })}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              >
+                <option value="Tersedia">Tersedia</option>
+                <option value="Stok Terbatas">Stok Terbatas</option>
+                <option value="Pendaftaran Dibuka">Pendaftaran Dibuka</option>
+              </select>
+            </div>
+
+            <div className="space-y-1 text-xs">
+              <label className="font-bold text-slate-700">Link Telegram Materi</label>
+              <input
+                type="text"
+                value={editingProduct.telegramChannelUrl || ''}
+                onChange={(e) => setEditingProduct({ ...editingProduct, telegramChannelUrl: e.target.value })}
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none"
+              />
+            </div>
+
+            <div className="pt-2 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setEditingProduct(null)}
+                className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="flex-1 py-2.5 bg-blue-800 hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-md"
+              >
+                Simpan Perubahan
               </button>
             </div>
           </form>

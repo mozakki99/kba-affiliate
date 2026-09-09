@@ -72,9 +72,11 @@ export interface Task {
   instructions: string[];
   caption: string;
   telegramMaterialUrl?: string;
+  publishDate?: string; // e.g. "2026-09-10" or "10 Sep 2026"
   unlockDate?: string; // e.g. "12 Sep 2026"
   taskMonth?: string; // e.g. "September 2026"
   submittedAt?: string;
+
   isCompletedChecked?: boolean;
   platformsPosted?: string[]; // e.g. ['Feed IG', 'Story IG', 'Story WA', 'Grup WA', 'Thread', 'Channel Telegram', 'Lainnya']
   platformViewers?: Record<string, number>; // e.g. { 'Story IG': 100, 'Thread': 50 }

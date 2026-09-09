@@ -303,6 +303,27 @@ export function useKBAStore() {
     saveState({ ...state, affiliates: updatedAffiliates });
   };
 
+  // ADMIN ACTION: Add new product
+  const addNewProduct = (newProdData: Omit<Product, 'id'>) => {
+    const newId = `prod-${Date.now().toString().slice(-4)}`;
+    const createdProduct: Product = {
+      ...newProdData,
+      id: newId,
+    };
+    const updatedProducts = [createdProduct, ...state.products];
+    saveState({ ...state, products: updatedProducts });
+    return createdProduct;
+  };
+
+  // ADMIN ACTION: Update product
+  const updateProduct = (id: string, updates: Partial<Product>) => {
+    const updatedProducts = state.products.map((p) =>
+      p.id === id ? { ...p, ...updates } : p
+    );
+    saveState({ ...state, products: updatedProducts });
+  };
+
+
   const loginUser = (identity: string) => {
     saveState({ ...state, isLoggedIn: true });
   };
@@ -342,6 +363,8 @@ export function useKBAStore() {
     addNewTask,
     addNewCampaign,
     updateAffiliateUser,
+    addNewProduct,
+    updateProduct,
     loginUser,
     logoutUser,
     resetDemoState,
