@@ -346,10 +346,10 @@ export default function HomePage() {
                   Program Afiliator Teraktif
                 </span>
                 <h2 className="font-bold text-sm sm:text-base text-white leading-snug">
-                  Total Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Bulan Ini!
+                  Total Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Bulan September 2026!
                 </h2>
                 <p className="text-emerald-100 text-[11px] leading-relaxed">
-                  Apresiasi khusus bagi mitra afiliator yang rutin publikasikan materi edukasi bulan ini (Insentif Rp 15.000 / orang).
+                  Apresiasi khusus bagi mitra afiliator yang rutin publikasikan materi edukasi Bulan September 2026 (Insentif Rp 15.000 / orang).
                 </p>
               </div>
             </div>

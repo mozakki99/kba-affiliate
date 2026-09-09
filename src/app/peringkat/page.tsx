@@ -10,7 +10,14 @@ export default function PeringkatPage() {
   const { user, leaderboardActivity, leaderboardSales, isLoaded, resetDemoState } = useKBAStore();
 
   const [activeTab, setActiveTab] = useState<'Keaktifan' | 'Penjualan'>('Keaktifan');
-  const [timeframe, setTimeframe] = useState<'Mingguan' | 'Bulanan'>('Mingguan');
+  const [selectedMonth, setSelectedMonth] = useState<string>('September');
+  const [selectedYear, setSelectedYear] = useState<string>('2026');
+
+  const months = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+  const years = ['2026', '2025', '2024'];
 
   if (!isLoaded) {
     return (
@@ -42,21 +49,30 @@ export default function PeringkatPage() {
               </p>
             </div>
 
-            {/* Timeframe selector */}
-            <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs font-semibold">
-              {(['Mingguan', 'Bulanan'] as const).map((tf) => (
-                <button
-                  key={tf}
-                  onClick={() => setTimeframe(tf)}
-                  className={`px-3 py-1.5 rounded-lg transition-colors ${
-                    timeframe === tf
-                      ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {tf}
-                </button>
-              ))}
+            {/* Month & Year Filter Selector */}
+            <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs font-semibold">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                {months.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -64,10 +80,12 @@ export default function PeringkatPage() {
           <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-emerald-700 space-y-2">
             <div className="flex items-center gap-2">
               <Gift className="w-5 h-5 text-amber-400 shrink-0" />
-              <h2 className="text-sm sm:text-base font-bold">Program Apresiasi Afiliator Teraktif Bulan Ini</h2>
+              <h2 className="text-sm sm:text-base font-bold">
+                Program Apresiasi Afiliator Teraktif Bulan {selectedMonth} {selectedYear}
+              </h2>
             </div>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Bulan Ini</strong> (masing-masing Rp 15.000). 
+              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Bulan {selectedMonth} {selectedYear}</strong> (masing-masing Rp 15.000). 
               Penilaian dihitung secara adil berdasarkan konsistensi publikasi edukasi harian Anda.
             </p>
           </div>
@@ -97,7 +115,7 @@ export default function PeringkatPage() {
                 <p className="font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Masuk Top 10 Penerima Apresiasi
                 </p>
-                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Bulan Ini)</p>
+                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Bulan {selectedMonth} {selectedYear})</p>
               </div>
             </div>
           )}
