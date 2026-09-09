@@ -17,7 +17,7 @@ export default function PeringkatPage() {
     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
   ];
-  const years = ['2026', '2025', '2024'];
+  const years = Array.from({ length: 2099 - 2024 + 1 }, (_, i) => String(2024 + i));
 
   if (!isLoaded) {
     return (
