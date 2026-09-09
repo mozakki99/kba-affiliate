@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Shield/Rounded Card -->
+  <rect x="16" y="16" width="480" height="480" rx="110" fill="url(#bgGrad)"/>
+  <rect x="24" y="24" width="464" height="464" rx="102" fill="none" stroke="url(#goldGrad)" stroke-width="12" opacity="0.85"/>
+
+  <!-- Crescent & Book Arabic Motif Emblem -->
+  <path d="M256 90 C 295 90, 330 105, 358 132 C 322 145, 295 178, 295 220 C 295 272, 337 315, 390 315 C 404 315, 417 312, 428 306 C 398 358, 332 394, 256 394 C 158 394, 78 314, 78 216 C 78 146, 118 85, 178 55 C 160 85, 150 120, 150 156 C 150 220, 195 272, 256 272 C 310 272, 354 232, 360 180 C 330 180, 305 165, 290 140 C 275 110, 260 90, 256 90 Z" fill="url(#goldGrad)" opacity="0.2"/>
+
+  <!-- Open Book Base -->
+  <path d="M110 320 Q 256 280 402 320 L 402 360 Q 256 320 110 360 Z" fill="url(#goldGrad)"/>
+  <path d="M120 310 Q 256 270 392 310 L 392 320 Q 256 280 120 320 Z" fill="#FFFFFF" opacity="0.9"/>
+
+  <!-- Bold KBA Letters -->
+  <text x="256" y="245" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="140" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="-2">KBA</text>
+
+  <!-- Crown / Star Accent -->
+  <polygon points="256,95 267,122 296,122 272,139 281,166 256,149 231,166 240,139 216,122 245,122" fill="url(#goldGrad)"/>
+</svg>

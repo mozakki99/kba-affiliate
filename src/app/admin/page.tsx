@@ -195,6 +195,9 @@ Berikut adalah data akses login Portal Afiliasi Anda:
 🔑 *Password:* ${reg.generatedPassword}
 🌐 *Link Login Portal:* https://aff-kba.pages.dev/auth
 
+⚠️ *CATATAN PENTING & WAJIB:*
+Mohon *SIMPAN nomor WhatsApp resmi Kampus Bahasa Arab ini* di kontak smartphone Anda. Menyimpan kontak ini bersifat wajib agar sistem pengiriman informasi tugas, tautan komisi, dan pembaruan portal dapat Anda terima secara langsung tanpa terhambat oleh pembatasan tautan dari WhatsApp.
+
 Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin keaktifan, dan komisi Anda. Jazakumullahu khairan!`;
 
     return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
