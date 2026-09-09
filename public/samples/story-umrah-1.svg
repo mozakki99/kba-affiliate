@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" fill="none">
+  <rect width="1080" height="1920" fill="#1E3A8A"/>
+  <rect x="60" y="60" width="960" height="1800" rx="32" fill="#FFFFFF" fill-opacity="0.05" stroke="#F59E0B" stroke-width="4"/>
+  <circle cx="540" cy="400" r="140" fill="#F59E0B" opacity="0.2"/>
+  <text x="540" y="420" font-family="sans-serif" font-size="120" font-weight="bold" fill="#F59E0B" text-anchor="middle">🕋</text>
+  <text x="540" y="700" font-family="sans-serif" font-size="64" font-weight="bold" fill="#FFFFFF" text-anchor="middle">SIAP UMRAH MANDIRI?</text>
+  <text x="540" y="790" font-family="sans-serif" font-size="42" fill="#93C5FD" text-anchor="middle">Kuasai 100+ Percakapan Praktis di Tanah Suci</text>
+  <rect x="140" y="940" width="800" height="340" rx="24" fill="#FFFFFF"/>
+  <text x="540" y="1040" font-family="sans-serif" font-size="38" font-weight="bold" fill="#1E3A8A" text-anchor="middle">Ebook Percakapan Umrah Mandiri</text>
+  <text x="540" y="1120" font-family="sans-serif" font-size="30" fill="#475569" text-anchor="middle">✅ Dialog Pasar & Restoran</text>
+  <text x="540" y="1180" font-family="sans-serif" font-size="30" fill="#475569" text-anchor="middle">✅ Dilengkapi Audio Pengucapan</text>
+  <text x="540" y="1450" font-family="sans-serif" font-size="36" fill="#F59E0B" text-anchor="middle">Diskon Promo Kampanye 30%</text>
+  <rect x="240" y="1520" width="600" height="110" rx="55" fill="#F59E0B"/>
+  <text x="540" y="1590" font-family="sans-serif" font-size="40" font-weight="bold" fill="#1E3A8A" text-anchor="middle">Klik Link di Bio! 👇</text>
+  <text x="540" y="1800" font-family="sans-serif" font-size="28" fill="#64748B" text-anchor="middle">Kampus Bahasa Arab (KBA) • Data Contoh</text>
+</svg>
