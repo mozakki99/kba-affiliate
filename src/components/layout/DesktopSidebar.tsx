@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Megaphone, Package, Trophy, UserCheck } from 'lucide-react';
+import { Home, Megaphone, Package, Trophy, UserCheck, BookOpen } from 'lucide-react';
 import { AffiliateUser } from '@/types';
 
 interface DesktopSidebarProps {
@@ -18,6 +18,7 @@ export function DesktopSidebar({ user }: DesktopSidebarProps) {
     { href: '/kampanye', label: 'Kampanye Diskon', icon: Megaphone },
     { href: '/produk', label: 'Produk & Materi', icon: Package },
     { href: '/peringkat', label: 'Peringkat Rajin', icon: Trophy },
+    { href: '/panduan', label: 'Panduan & Tutorial', icon: BookOpen },
     { href: '/profil', label: 'Profil & Lynk.id', icon: UserCheck },
   ];
 

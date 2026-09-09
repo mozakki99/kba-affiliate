@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X } from 'lucide-react';
+import { Home, Package, Trophy, MoreHorizontal, Megaphone, UserCheck, X, BookOpen } from 'lucide-react';
 import { AffiliateUser } from '@/types';
 
 interface MobileBottomNavProps {
@@ -21,6 +21,7 @@ export function MobileBottomNav({ user }: MobileBottomNavProps) {
   ];
 
   const secondaryItems = [
+    { href: '/panduan', label: 'Panduan & Tutorial', icon: BookOpen, description: 'Sistem perpoinan, aturan insentif & tutorial promosi' },
     { href: '/kampanye', label: 'Kampanye Diskon', icon: Megaphone, description: 'Event promo terbatas diskon khusus' },
     { href: '/profil', label: 'Profil & Lynk.id', icon: UserCheck, description: 'Pengaturan username Lynk.id Anda' },
   ];
@@ -51,14 +52,14 @@ export function MobileBottomNav({ user }: MobileBottomNavProps) {
         <button
           onClick={() => setShowMoreMenu(!showMoreMenu)}
           className={`flex flex-col items-center justify-center py-1 px-3 rounded-lg text-[11px] font-medium transition-colors ${
-            showMoreMenu || pathname === '/kampanye' || pathname === '/profil'
+            showMoreMenu || pathname === '/kampanye' || pathname === '/profil' || pathname === '/panduan'
               ? 'text-blue-800 font-bold'
               : 'text-slate-500 hover:text-slate-900'
           }`}
         >
           <MoreHorizontal
             className={`w-5 h-5 mb-0.5 ${
-              showMoreMenu || pathname === '/kampanye' || pathname === '/profil' ? 'text-blue-700' : 'text-slate-400'
+              showMoreMenu || pathname === '/kampanye' || pathname === '/profil' || pathname === '/panduan' ? 'text-blue-700' : 'text-slate-400'
             }`}
           />
           <span>Lainnya</span>
