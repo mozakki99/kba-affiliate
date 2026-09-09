@@ -90,7 +90,7 @@ export function useKBAStore() {
   };
 
   const getLynkUrlForProduct = (productId: string, username?: string) => {
-    const u = username || state.user.lynkIdUsername || 'ahmad';
+    const u = username || state.user.lynkIdUsername || 'afiliator';
     const product = state.products.find((p) => p.id === productId);
     const slug = product?.slug || productId;
     return `https://lynk.id/${u}/${slug}`;

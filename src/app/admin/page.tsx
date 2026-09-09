@@ -1213,7 +1213,7 @@ Silakan masuk ke portal untuk mulai menjalankan tugas promosi, mengklaim poin ke
       {previewProduct && (
         <ProductDetailModal
           product={previewProduct}
-          userLynkId={user.lynkIdUsername || 'ahmad'}
+          userLynkId={user.lynkIdUsername || 'afiliator'}
           onClose={() => setPreviewProduct(null)}
           onShowToast={addToast}
         />

@@ -49,7 +49,7 @@ export function TaskDetailModal({
 }: TaskDetailModalProps) {
   if (!task) return null;
 
-  const lynkUrl = `https://lynk.id/${userLynkId || 'ahmad'}/${task.productId.replace('prod-', 'produk-')}`;
+  const lynkUrl = `https://lynk.id/${userLynkId || 'afiliator'}/${task.productId.replace('prod-', 'produk-')}`;
 
   const [isCompletedChecked, setIsCompletedChecked] = useState<boolean>(true);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(

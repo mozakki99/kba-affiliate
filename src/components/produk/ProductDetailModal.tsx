@@ -28,7 +28,7 @@ interface ProductDetailModalProps {
 export function ProductDetailModal({ product, userLynkId, onClose, onShowToast }: ProductDetailModalProps) {
   if (!product) return null;
 
-  const lynkUrl = `https://lynk.id/${userLynkId || 'ahmad'}/${product.slug}`;
+  const lynkUrl = `https://lynk.id/${userLynkId || 'afiliator'}/${product.slug}`;
   const telegramUrl = product.telegramChannelUrl || 'https://t.me/materi_kba_official_private';
 
   const [activeTab, setActiveTab] = useState<'knowledge' | 'copywriting'>('knowledge');

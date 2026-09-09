@@ -96,8 +96,8 @@ export default function HomePage() {
   const activeTodayTask = tasks.find((t) => t.deadline.includes('Hari ini') && t.status === 'Belum dikerjakan') || tasks[0];
 
   // Detailed Mission Statistics
-  const completedMissionsCount = tasks.filter((t) => t.status === 'Selesai').length + 10; // e.g. 12 completed lifetime
-  const missedMissionsCount = tasks.filter((t) => t.status === 'Terlewat').length + 3; // e.g. 5 missed lifetime
+  const completedMissionsCount = user.completedTasksCount ?? tasks.filter((t) => t.status === 'Selesai').length;
+  const missedMissionsCount = tasks.filter((t) => t.status === 'Terlewat').length;
 
   // Filtered task catalog
   const filteredTasks = tasks.filter((t) => {
@@ -116,8 +116,8 @@ export default function HomePage() {
   const visibleTasks = filteredTasks.slice(0, displayLimit);
 
   const lynkUrl = activeTodayTask
-    ? `https://lynk.id/${user.lynkIdUsername || 'ahmad'}/${activeTodayTask.productId.replace('prod-', 'produk-')}`
-    : `https://lynk.id/${user.lynkIdUsername || 'ahmad'}`;
+    ? `https://lynk.id/${user.lynkIdUsername || 'afiliator'}/${activeTodayTask.productId.replace('prod-', 'produk-')}`
+    : `https://lynk.id/${user.lynkIdUsername || 'afiliator'}`;
 
   const telegramUrl = activeTodayTask?.telegramMaterialUrl || 'https://t.me/materi_kba_official_private';
 
@@ -157,10 +157,10 @@ export default function HomePage() {
                     Ahlan, {user.name.split(' ')[0]}!
                   </h1>
                   <div className="flex items-center gap-2 text-[11px] text-slate-600 mt-0.5">
-                    <span className="text-emerald-800 font-extrabold">{user.totalPoints || 770} Poin</span>
+                    <span className="text-emerald-800 font-extrabold">{user.totalPoints ?? 0} Poin</span>
                     <span>•</span>
                     <span className="text-amber-800 font-extrabold flex items-center gap-0.5">
-                      <Flame className="w-3 h-3 text-amber-500 fill-amber-500" /> {user.streakDays} Hari
+                      <Flame className="w-3 h-3 text-amber-500 fill-amber-500" /> {user.streakDays || 1} Hari
                     </span>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function HomePage() {
                     <span className="text-[10px] text-blue-900 font-bold flex items-center gap-1">
                       <Award className="w-3 h-3 text-blue-600 shrink-0" /> Poin Rajin
                     </span>
-                    <p className="text-sm font-extrabold text-blue-900">+{user.diligencePoints || 420} Poin</p>
+                    <p className="text-sm font-extrabold text-blue-900">+{user.diligencePoints ?? 0} Poin</p>
                     <span className="text-[9px] text-blue-700">Bonus Absensi</span>
                   </div>
 
@@ -215,7 +215,7 @@ export default function HomePage() {
                     <span className="text-[10px] text-amber-900 font-bold flex items-center gap-1">
                       <TrendingUp className="w-3 h-3 text-amber-600 shrink-0" /> Poin Viewers
                     </span>
-                    <p className="text-sm font-extrabold text-amber-900">+{user.viewerPoints || 350} Poin</p>
+                    <p className="text-sm font-extrabold text-amber-900">+{user.viewerPoints ?? 0} Poin</p>
                     <span className="text-[9px] text-amber-800">1 Viewer = +1 Poin</span>
                   </div>
 
@@ -224,9 +224,9 @@ export default function HomePage() {
                       <span className="flex items-center gap-1">
                         <Trophy className="w-3 h-3 text-amber-600 shrink-0" /> Total Poin Kejujuran
                       </span>
-                      <span className="text-emerald-800 font-extrabold">(#3 Top 10)</span>
+                      <span className="text-emerald-800 font-extrabold">{user.rank ? `(#${user.rank})` : ''}</span>
                     </div>
-                    <p className="text-sm font-extrabold text-emerald-950">{user.totalPoints || 770} Poin Terakumulasi</p>
+                    <p className="text-sm font-extrabold text-emerald-950">{user.totalPoints ?? 0} Poin Terakumulasi</p>
                   </div>
                 </div>
 
@@ -260,14 +260,14 @@ export default function HomePage() {
                   Ahlan, {user.name}!
                 </h1>
                 <p className="text-xs text-slate-500">
-                  ID Afiliator: <strong className="text-amber-800">{user.id}</strong> • Lynk.id: <strong className="text-blue-800">lynk.id/{user.lynkIdUsername}</strong>
+                  ID Afiliator: <strong className="text-amber-800">{user.id}</strong> • Lynk.id: <strong className="text-blue-800">lynk.id/{user.lynkIdUsername || 'afiliator'}</strong>
                 </p>
               </div>
 
               {/* Streak Badge */}
               <div className="flex items-center gap-2 bg-amber-500 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-extrabold shadow-xs">
                 <Flame className="w-4 h-4 text-slate-950" />
-                <span>Streak Promosi: {user.streakDays} Hari</span>
+                <span>Streak Promosi: {user.streakDays || 1} Hari</span>
               </div>
             </div>
 
@@ -299,7 +299,7 @@ export default function HomePage() {
                   <Award className="w-4 h-4 text-blue-600 shrink-0" />
                   <span className="truncate">Poin Rajin</span>
                 </div>
-                <p className="text-base sm:text-lg font-extrabold text-blue-900">+{user.diligencePoints || 420} Poin</p>
+                <p className="text-base sm:text-lg font-extrabold text-blue-900">+{user.diligencePoints ?? 0} Poin</p>
                 <span className="text-[10px] text-blue-700 font-medium">Bonus Absensi</span>
               </div>
 
@@ -309,7 +309,7 @@ export default function HomePage() {
                   <TrendingUp className="w-4 h-4 text-amber-600 shrink-0" />
                   <span className="truncate">Poin Viewers</span>
                 </div>
-                <p className="text-base sm:text-lg font-extrabold text-amber-900">+{user.viewerPoints || 350} Poin</p>
+                <p className="text-base sm:text-lg font-extrabold text-amber-900">+{user.viewerPoints ?? 0} Poin</p>
                 <span className="text-[10px] text-amber-800 font-medium">1 Viewer = +1 Poin</span>
               </div>
 
@@ -320,7 +320,7 @@ export default function HomePage() {
                   <span className="truncate">Total Poin</span>
                 </div>
                 <p className="text-base sm:text-lg font-extrabold text-emerald-950">
-                  {user.totalPoints || 770} Poin <span className="text-xs text-emerald-800 font-bold">(#3 Top 10)</span>
+                  {user.totalPoints ?? 0} Poin {user.rank ? <span className="text-xs text-emerald-800 font-bold">(#{user.rank})</span> : null}
                 </p>
                 <span className="text-[10px] text-emerald-800 font-medium">Total Akumulasi</span>
               </div>

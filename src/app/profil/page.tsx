@@ -222,7 +222,7 @@ export default function ProfilPage() {
 
             <div className="space-y-3">
               {products.map((product) => {
-                const lynkUrl = `https://lynk.id/${user.lynkIdUsername || 'ahmad'}/${product.slug}`;
+                const lynkUrl = `https://lynk.id/${user.lynkIdUsername || 'afiliator'}/${product.slug}`;
 
                 return (
                   <div

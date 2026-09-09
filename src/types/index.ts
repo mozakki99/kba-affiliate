@@ -24,6 +24,8 @@ export interface AffiliateUser {
   agreedToRules?: boolean;
   password?: string;
   statusAccount?: 'Aktif' | 'Nonaktif';
+  completedTasksCount?: number;
+  rank?: number;
 }
 
 export type RegistrationStatus = 'Pending' | 'Disetujui' | 'Ditolak';
