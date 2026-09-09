@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Task } from '@/types';
-import { Clock, Award, Camera, MessageCircle, Users, ArrowRight, CheckCircle2, XCircle, Check, Send, Lock } from 'lucide-react';
+import { Clock, Award, ArrowRight, CheckCircle2, XCircle, Check, Lock } from 'lucide-react';
 
 interface TaskCardProps {
   task: Task;
@@ -14,32 +14,6 @@ export function TaskCard({ task, onOpenTask, isProminent }: TaskCardProps) {
   const isDone = task.status === 'Selesai';
   const isMissed = task.status === 'Terlewat';
   const isLocked = task.status === 'Terkunci';
-
-  const getChannelBadge = (channel: Task['channel']) => {
-    switch (channel) {
-      case 'Instagram Story':
-        return (
-          <span className="inline-flex items-center gap-1 bg-pink-50 text-pink-700 border border-pink-200/70 text-xs px-2.5 py-1 rounded-full font-medium">
-            <Camera className="w-3.5 h-3.5" />
-            Instagram Story
-          </span>
-        );
-      case 'WhatsApp Status':
-        return (
-          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-xs px-2.5 py-1 rounded-full font-medium">
-            <MessageCircle className="w-3.5 h-3.5" />
-            WA Status
-          </span>
-        );
-      case 'Grup WhatsApp':
-        return (
-          <span className="inline-flex items-center gap-1 bg-teal-50 text-teal-700 border border-teal-200/70 text-xs px-2.5 py-1 rounded-full font-medium">
-            <Users className="w-3.5 h-3.5" />
-            Grup WA
-          </span>
-        );
-    }
-  };
 
   const getStatusBadge = (status: Task['status']) => {
     switch (status) {
@@ -92,18 +66,15 @@ export function TaskCard({ task, onOpenTask, isProminent }: TaskCardProps) {
       <div>
         {/* Top Badges */}
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div className="flex flex-wrap items-center gap-1.5">
-            {getChannelBadge(task.channel)}
-            <span
-              className={`text-xs px-2.5 py-1 rounded-full font-medium border ${
-                task.type === 'Kampanye'
-                  ? 'bg-amber-50 text-amber-900 border-amber-300/80 font-semibold'
-                  : 'bg-slate-100 text-slate-700 border-slate-200'
-              }`}
-            >
-              {task.type === 'Kampanye' ? 'Kampanye' : 'Rutin'}
-            </span>
-          </div>
+          <span
+            className={`text-xs px-2.5 py-1 rounded-full font-medium border ${
+              task.type === 'Kampanye'
+                ? 'bg-amber-50 text-amber-900 border-amber-300/80 font-semibold'
+                : 'bg-slate-100 text-slate-700 border-slate-200'
+            }`}
+          >
+            {task.type === 'Kampanye' ? 'Kampanye Diskon' : 'Tugas Rutin'}
+          </span>
           {getStatusBadge(task.status)}
         </div>
 
