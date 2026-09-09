@@ -25,14 +25,14 @@ export function CampaignCard({ campaign, tasks, onOpenTask }: CampaignCardProps)
       }`}
     >
       {/* Top Banner & Status */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-amber-100 text-amber-900">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="flex items-start gap-2.5">
+          <div className="p-2 rounded-xl bg-amber-100 text-amber-900 shrink-0 mt-0.5 sm:mt-0">
             <Megaphone className="w-5 h-5" />
           </div>
           <div>
             <span
-              className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${
+              className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block ${
                 campaign.status === 'Aktif'
                   ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                   : campaign.status === 'Mendatang'
@@ -42,12 +42,12 @@ export function CampaignCard({ campaign, tasks, onOpenTask }: CampaignCardProps)
             >
               Kampanye {campaign.status}
             </span>
-            <h3 className="font-bold text-slate-900 text-lg sm:text-xl mt-1">{campaign.title}</h3>
+            <h3 className="font-bold text-slate-900 text-base sm:text-lg mt-1 break-words leading-snug">{campaign.title}</h3>
           </div>
         </div>
 
-        <div className="text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-          <Calendar className="w-4 h-4 text-blue-700" />
+        <div className="text-xs text-slate-600 font-medium flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shrink-0 self-start sm:self-auto">
+          <Calendar className="w-4 h-4 text-blue-700 shrink-0" />
           <span>
             {campaign.startDate} s.d. {campaign.endDate} (WIB)
           </span>

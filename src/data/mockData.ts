@@ -24,22 +24,22 @@ export const initialProducts: Product[] = [
     category: 'Ebook & Kamus',
     priceSample: 'Rp 99.000 (Data contoh)',
     commissionSample: 'Rp 35.000 / penjualan (Data contoh)',
-    targetAudience: 'Calon jamaah umrah mandiri/backpacker yang ingin mahir komunikasi harian di Tanah Suci.',
+    targetAudience: 'Calon jamaah umrah mandiri dan pembelajar bahasa Arab yang ingin lancar berkomunikasi harian di Tanah Suci.',
     benefits: [
-      'Panduan 100+ kosakata penting saat di bandara, hotel, dan pasar.',
-      'Dialog interaktif Arab-Indonesia dilengkapi transliterasi.',
-      'Bonus rekaman pengucapan audio native speaker.',
+      'Panduan 100+ kosakata penting di bandara, hotel, dan area pertokoan.',
+      'Dialog interaktif Arab-Indonesia yang dilengkapi transliterasi.',
+      'Bonus rekaman pengucapan audio langsung dari penutur asli (native speaker).',
     ],
     contents: [
-      'Bab 1: Kedatangan & Imigrasi Airport Jeddah/Madinah',
-      'Bab 2: Transaksi di Hotel & Restoran',
-      'Bab 3: Belanja di Pasar & Tawar Menawar',
-      'Bab 4: Keadaan Darurat & Tanya Arah',
+      'Bab 1: Prosedur Imigrasi & Bandara Jeddah/Madinah',
+      'Bab 2: Komunikasi di Hotel & Layanan Pemesanan',
+      'Bab 3: Interaksi di Pertokoan & Tawar Menawar',
+      'Bab 4: Panduan Darurat & Petunjuk Arah Lengkap',
     ],
     faq: [
       {
-        question: 'Apakah ebook ini dalam format PDF?',
-        answer: 'Ya, PDF interaktif yang bisa dibuka di HP, Tablet, atau dicetak.',
+        question: 'Apakah ebook ini dapat diakses dalam format PDF?',
+        answer: 'Ya, PDF interaktif yang praktis dibaca di smartphone, tablet, maupun dicetak.',
       },
     ],
     availabilityStatus: 'Tersedia',
@@ -48,15 +48,15 @@ export const initialProducts: Product[] = [
     generalCopywriting: [
       {
         id: 'copy-1',
-        title: 'Narasi Umum 1: Persiapan Umrah Mandiri',
-        content: `Punya rencana Umrah tapi khawatir bingung nawar di pasar atau tanya hotel dalam bahasa Arab? 🕋🇸🇦
+        title: 'Narasi Promosi 1: Persiapan Bekal Umrah Mandiri',
+        content: `Persiapkan bekal percakapan bahasa Arab harian Anda untuk kelancaran ibadah Umrah di Tanah Suci. 🕋🇸🇦
 
-Tenang! Pelajari Ebook Percakapan Praktis Umrah Mandiri dari Kampus Bahasa Arab:
+Dapatkan Ebook Percakapan Praktis Umrah Mandiri persembahan Kampus Bahasa Arab:
 • 100+ Dialog Harian Praktis
-• Audio pengucapan langsung
-• Bisa dibaca kapan saja di HP
+• Dilengkapi Audio Pengucapan Asli
+• Praktis Diperoleh & Dibaca di Smartphone
 
-Cek selengkapnya di link berikut:`,
+Dapatkan materi lengkapnya melalui tautan resmi berikut:`,
       },
     ],
   },
@@ -67,21 +67,21 @@ Cek selengkapnya di link berikut:`,
     category: 'Ebook & Kamus',
     priceSample: 'Rp 199.000 (Data contoh)',
     commissionSample: 'Rp 70.000 / penjualan (Data contoh)',
-    targetAudience: 'Penuntut ilmu, pekerja professional di Saudi, serta jamaah umrah/haji.',
+    targetAudience: 'Penuntut ilmu, profesional di Arab Saudi, serta jamaah umrah dan haji.',
     benefits: [
-      'Mencakup 3 jilid kamus bahasa Ammiyah Saudi populer.',
-      'Lebih dari 3.000 entry ungkapan sehari-hari masyarakat Riyadh & Hijaz.',
-      'Disusun oleh pengajar lulusan Universitas Islam Madinah.',
+      'Mencakup 3 jilid kamus percakapan bahasa Ammiyah Saudi populer.',
+      'Lebih dari 3.000 ungkapan sehari-hari wilayah Riyadh & Hijaz.',
+      'Disusun oleh tim pengajar alumni Universitas Islam Madinah.',
     ],
     contents: [
-      'Jilid 1: Dasar Ammiyah & Kata Kerja Harian',
-      'Jilid 2: Percakapan Tempat Kerja & Bisnis',
-      'Jilid 3: Dialek Lokal & Istilah Populer Medsos',
+      'Jilid 1: Dasar Ammiyah & Kata Kerja Komunikasi Harian',
+      'Jilid 2: Percakapan Tempat Kerja & Profesional',
+      'Jilid 3: Dialek Lokal & Istilah Populer Kontemporer',
     ],
     faq: [
       {
-        question: 'Apakah bentuknya buku fisik atau digital?',
-        answer: 'Paket ini berupa digital e-book + akses update seumur hidup.',
+        question: 'Apakah produk ini berupa buku fisik atau digital?',
+        answer: 'Paket ini berbentuk format digital e-book beserta akses pembaruan.',
       },
     ],
     availabilityStatus: 'Stok Terbatas',
@@ -96,13 +96,13 @@ Cek selengkapnya di link berikut:`,
     category: 'Ebook & Kamus',
     priceSample: 'Rp 79.000 (Data contoh)',
     commissionSample: 'Rp 25.000 / penjualan (Data contoh)',
-    targetAudience: 'Pemula yang baru belajar dialek Ammiyah Arab.',
+    targetAudience: 'Pembelajar pemula yang ingin menguasai dialek Ammiyah Arab secara bertahap.',
     benefits: [
-      'Audio penggalan kata langsung dari native speaker.',
-      'Sangat ringan dipelajari 10 menit per hari.',
+      'Dilengkapi audio penggalan kata langsung dari penutur asli.',
+      'Metode belajar yang ringkas dan efektif 10 menit setiap hari.',
     ],
-    contents: ['Ungkapan Sapaan', 'Angka & Uang', 'Makan & Minum', 'Kendaraan & Transportasi'],
-    faq: [{ question: 'Bisa diputar di iPhone?', answer: 'Bisa, format MP3 kompatibel di semua HP.' }],
+    contents: ['Ungkapan Sapaan', 'Angka & Transaksi', 'Makan & Minum', 'Transportasi Harian'],
+    faq: [{ question: 'Apakah kompatibel di perangkat iOS?', answer: 'Ya, format audio MP3 kompatibel di seluruh perangkat.' }],
     availabilityStatus: 'Tersedia',
     lastUpdated: '15 Agustus 2026',
     telegramChannelUrl: 'https://t.me/materi_kba_ammiyah1_private',
@@ -113,21 +113,21 @@ Cek selengkapnya di link berikut:`,
 export const initialCampaigns: Campaign[] = [
   {
     id: 'camp-1',
-    title: 'Pekan Bekal Umrah (Diskon 30%)',
+    title: 'Pekan Bekal Umrah (Diskon Spesial 30%)',
     status: 'Aktif',
     startDate: '2026-09-08',
     endDate: '2026-09-15',
     productName: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     productId: 'prod-1',
-    offer: 'Diskon Spesial 30% + Bonus 50 Audio Percakapan',
+    offer: 'Diskon Spesial 30% + Bonus 50 Audio Percakapan Harian',
     platforms: ['Instagram Story', 'WhatsApp Status', 'Grup WhatsApp'],
-    rules: 'Sistem Kejujuran! Begitu Anda centang pengerjaan, poin keaktifan langsung masuk.',
-    bonus: 'Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Pekan Ini (Masing-masing Rp 15.000).',
+    rules: 'Sistem Kejujuran & Amanah: Poin keaktifan dan poin viewers otomatis terakumulasi setelah Anda mengonfirmasi absensi postingan.',
+    bonus: 'Program Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Pekan Ini (Masing-masing Rp 15.000).',
     tasksSequence: [
       {
         day: 1,
-        title: 'Posting 3 story tentang bekal bahasa sebelum umrah',
-        description: 'Fokus tawarkan promo diskon 30% terbatas.',
+        title: 'Posting materi promosi diskon 30% Ebook Umrah Mandiri',
+        description: 'Publikasikan materi promo diskon spesial di platform pilihan Anda.',
         points: 50,
       },
     ],
@@ -137,7 +137,7 @@ export const initialCampaigns: Campaign[] = [
 export const initialTasks: Task[] = [
   {
     id: 'task-1',
-    title: 'Posting materi diskon Ebook Umrah Mandiri',
+    title: 'Posting Materi Promo Diskon 30% Ebook Umrah Mandiri',
     productName: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     productId: 'prod-1',
     channel: 'Instagram Story',
@@ -149,22 +149,22 @@ export const initialTasks: Task[] = [
     taskMonth: 'September 2026',
     telegramMaterialUrl: 'https://t.me/materi_kba_umrah_private/102',
     instructions: [
-      'Ambil gambar di Channel Telegram Private KBA.',
-      'Salin caption + link Lynk.id Anda.',
-      'Pilih platform tempat Anda posting & centang absensi.',
+      'Unduh materi visual dari Channel Telegram Resmi KBA.',
+      'Salin teks naskah promo dan tautan Lynk.id pribadi Anda.',
+      'Unggah ke platform pilihan Anda dan beri tanda centang absensi.',
     ],
-    caption: `Mau Umrah tapi bingung mau ngomong apa saat nawar di pasar atau tanya arah ke hotel? 🇸🇦🕋
+    caption: `Persiapkan bekal percakapan bahasa Arab harian Anda untuk kelancaran ibadah Umrah di Tanah Suci. 🕋🇸🇦
 
-Jangan sampai kaku saat di Tanah Suci! Dapatkan Ebook Percakapan Praktis untuk Umrah Mandiri dari Kampus Bahasa Arab:
-• 100+ Dialog Praktis
-• Dilengkapi Audio Pengucapan
-• Promo Diskon 30% Pekan Ini!
+Dapatkan Ebook Percakapan Praktis Umrah Mandiri persembahan Kampus Bahasa Arab:
+• 100+ Dialog Harian Praktis
+• Dilengkapi Audio Pengucapan Asli
+• Promo Diskon Spesial 30% Pekan Ini
 
-Klik link di bawah ini untuk amankan promonya sekarang! 👇`,
+Amankan promonya melalui tautan resmi berikut: 👇`,
   },
   {
     id: 'task-7',
-    title: 'Edu-post 5 tips tawar menawar di pasar Jeddah/Madinah',
+    title: 'Edu-Post: 5 Frasa Penting Percakapan Bahasa Arab di Tanah Suci',
     productName: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     productId: 'prod-1',
     channel: 'WhatsApp Status',
@@ -175,22 +175,22 @@ Klik link di bawah ini untuk amankan promonya sekarang! 👇`,
     taskMonth: 'September 2026',
     telegramMaterialUrl: 'https://t.me/materi_kba_umrah_private/108',
     instructions: [
-      'Salin teks tips percakapan bahasa Arab.',
-      'Post ke Feed/Story IG, Thread, atau WA Status.',
+      'Salin teks materi edukasi percakapan bahasa Arab.',
+      'Publikasikan di Feed/Story Instagram, Thread, atau WA Status.',
     ],
-    caption: `Ternyata tawar menawar oleh-oleh di pasar Jeddah gampang banget kalau tahu 5 frasa ini! 🇸🇦
+    caption: `Pelajari 5 frasa penting dalam bahasa Arab untuk kemudahan bertransaksi saat berada di Jeddah maupun Madinah: 🇸🇦
 
 1. Kam hatha? (Berapa harganya ini?)
-2. Ghali jiddan! (Mahal banget!)
-3. Rakkhis shwayya (Kurangi dikit dong)
-4. A'tini khashm (Kasi diskon ya)
+2. Ghali jiddan (Harga ini terlalu tinggi)
+3. Rakkhis shwayya (Bolehkah diberikan potongan?)
+4. A'tini khashm (Berikan harga terbaik ya)
 5. Shukran jazeelan (Terima kasih banyak)
 
-Pelajari dialog lengkapnya di Ebook Percakapan KBA! 👇`,
+Pelajari panduan dialog selengkapnya dalam Ebook Percakapan KBA melalui tautan berikut: 👇`,
   },
   {
     id: 'task-2',
-    title: 'Share testimoni alumni jamaah umrah terbantu ebook KBA',
+    title: 'Testimoni Alumni & Jamaah Umrah Pengguna Ebook KBA',
     productName: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     productId: 'prod-1',
     channel: 'WhatsApp Status',
@@ -208,18 +208,18 @@ Pelajari dialog lengkapnya di Ebook Percakapan KBA! 👇`,
     submissionViewerCount: '150 viewers',
     telegramMaterialUrl: 'https://t.me/materi_kba_umrah_private/105',
     instructions: [
-      'Salin teks testimoni.',
-      'Post ke WhatsApp Status & Grup WhatsApp.',
+      'Salin naskah testimoni alumni.',
+      'Unggah ke WhatsApp Status & Grup WhatsApp.',
     ],
-    caption: `MasyaAllah, baca testimoni jamaah umrah yang terbantu dengan Ebook Percakapan KBA! 
+    caption: `MasyaAllah, simak kebahagiaan para jamaah umrah yang merasakan kemudahan berinteraksi setelah mempelajari Ebook Percakapan KBA:
 
-"Alhamdulillah pas beli oleh-oleh di Jeddah gak bingung lagi nawar." (Pak Rahmat)
+"Alhamdulillah, saat bertransaksi dan berkegiatan di Tanah Suci menjadi jauh lebih percaya diri." (Pak Rahmat)
 
-Yuk siapin bekal umrahmu sekarang! 👇`,
+Siapkan bekal bahasa Arab Anda sekarang melalui tautan resmi berikut: 👇`,
   },
   {
     id: 'task-3',
-    title: 'Posting info promo bundling 3 kamus logat Saudi (Tugas Lampau)',
+    title: 'Posting Promo Bundling 3 Kamus Logat Saudi (Tugas Lampau)',
     productName: 'Paket Bundling 3 Kamus Percakapan Logat Saudi',
     productId: 'prod-2',
     channel: 'Instagram Story',
@@ -233,7 +233,7 @@ Yuk siapin bekal umrahmu sekarang! 👇`,
   },
   {
     id: 'task-4',
-    title: 'Edu-post 5 kosakata Ammiyah harian (Tugas Lampau)',
+    title: 'Edu-Post: 5 Kosakata Ammiyah Harian (Tugas Lampau)',
     productName: 'Kamus Percakapan Ammiyah Jilid 1 dengan Audio',
     productId: 'prod-3',
     channel: 'Instagram Story',
@@ -247,7 +247,7 @@ Yuk siapin bekal umrahmu sekarang! 👇`,
   },
   {
     id: 'task-5',
-    title: 'Posting promo Flash Sale Akhir Pekan (Mendatang)',
+    title: 'Posting Promo Flash Sale Akhir Pekan (Mendatang)',
     productName: 'Ebook Percakapan Praktis untuk Umrah Mandiri',
     productId: 'prod-1',
     channel: 'WhatsApp Status',
@@ -263,7 +263,7 @@ Yuk siapin bekal umrahmu sekarang! 👇`,
   },
   {
     id: 'task-6',
-    title: 'Posting materi Gratis Vocab Harian (Bulan Lalu)',
+    title: 'Posting Materi Kosakata Harian (Bulan Lalu)',
     productName: 'Kamus Percakapan Ammiyah Jilid 1 dengan Audio',
     productId: 'prod-3',
     channel: 'Grup WhatsApp',

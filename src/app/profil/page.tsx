@@ -195,19 +195,19 @@ export default function ProfilPage() {
             <div className="pt-2 flex justify-end">
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-colors flex items-center gap-1.5 shadow-xs"
+                className="w-full sm:w-auto px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-xs"
               >
                 <Save className="w-4 h-4" />
-                <span>Simpan Username Lynk.id</span>
+                <span>Simpan Pengaturan Profil & Lynk.id</span>
               </button>
             </div>
           </form>
 
           {/* Generated Product Links Table */}
-          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
             <h2 className="font-bold text-base sm:text-lg text-slate-900 flex items-center gap-2">
-              <LinkIcon className="w-5 h-5 text-blue-700" />
-              Link Afiliasi Lynk.id Otomatis Per Produk
+              <LinkIcon className="w-5 h-5 text-blue-700 shrink-0" />
+              <span>Link Afiliasi Lynk.id Otomatis Per Produk</span>
             </h2>
 
             <div className="space-y-3">
@@ -217,19 +217,19 @@ export default function ProfilPage() {
                 return (
                   <div
                     key={product.id}
-                    className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm"
+                    className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm"
                   >
-                    <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-100 px-2 py-0.5 rounded">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-100 px-2 py-0.5 rounded inline-block">
                         {product.category}
                       </span>
-                      <h3 className="font-bold text-slate-900 mt-1">{product.title}</h3>
-                      <p className="font-mono text-blue-700 font-medium text-xs mt-0.5">{lynkUrl}</p>
+                      <h3 className="font-bold text-slate-900 mt-1 break-words">{product.title}</h3>
+                      <p className="font-mono text-blue-700 font-medium text-xs mt-0.5 break-all">{lynkUrl}</p>
                     </div>
 
                     <button
                       onClick={() => handleCopyLink(product.id, lynkUrl)}
-                      className="px-3.5 py-2 bg-white border border-slate-300 hover:bg-blue-50 hover:text-blue-800 text-slate-700 font-semibold rounded-lg flex items-center gap-1.5 transition-colors shrink-0 shadow-xs"
+                      className="w-full sm:w-auto px-3.5 py-2 bg-white border border-slate-300 hover:bg-blue-50 hover:text-blue-800 text-slate-700 font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors shrink-0 shadow-xs"
                     >
                       {copiedId === product.id ? (
                         <Check className="w-3.5 h-3.5 text-emerald-600" />

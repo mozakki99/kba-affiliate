@@ -64,22 +64,22 @@ export function ProductCard({ product, onOpenDetail }: ProductCardProps) {
       </div>
 
       {/* Footer CTA */}
-      <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+      <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
         <a
           href={telegramUrl}
           target="_blank"
           rel="noreferrer"
-          className="text-[11px] font-bold text-sky-700 hover:underline flex items-center gap-1"
+          className="text-xs font-bold text-sky-800 hover:underline flex items-center justify-center sm:justify-start gap-1 py-1"
         >
-          <Send className="w-3.5 h-3.5 text-sky-600" />
+          <Send className="w-3.5 h-3.5 text-sky-600 shrink-0" />
           <span>Materi Telegram</span>
         </a>
         <button
           onClick={() => onOpenDetail(product)}
-          className="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center gap-1.5 shadow-xs"
+          className="w-full sm:w-auto px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-xs"
         >
           <span>Detail Produk</span>
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
         </button>
       </div>
     </div>

@@ -263,18 +263,18 @@ export function TaskDetailModal({
               Konfirmasi Absensi & Viewers Per-Platform
             </span>
 
-            {/* Checkbox Konfirmasi */}
-            <label className="flex items-start gap-3 p-3 bg-white border border-slate-300 rounded-xl cursor-pointer hover:border-emerald-400 transition-colors">
+            {/* Main Completion Checkbox */}
+            <label className="flex items-start gap-3 p-3.5 bg-emerald-50/80 border border-emerald-300 rounded-xl cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={isCompletedChecked}
                 onChange={(e) => setIsCompletedChecked(e.target.checked)}
-                className="w-5 h-5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 mt-0.5"
+                className="w-5 h-5 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 mt-0.5 shrink-0"
               />
-              <div>
-                <span className="font-bold text-slate-900">Saya Sudah Posting Hari Ini</span>
-                <p className="text-xs text-slate-500">
-                  Sistem KBA mengutamakan kejujuran. Dissentang = Poin Rajin (+{task.points}) langsung masuk!
+              <div className="space-y-0.5">
+                <span className="font-bold text-slate-900 text-xs sm:text-sm">Saya Sudah Mempublikasikan Materi Hari Ini</span>
+                <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+                  Sistem KBA mengutamakan nilai-nilai amanah. Poin Rajin (+{task.points}) langsung terakumulasi ke profil Anda.
                 </p>
               </div>
             </label>
@@ -283,7 +283,7 @@ export function TaskDetailModal({
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className="block font-bold text-slate-900 text-xs">
-                  Posting ke Mana Saja? Centang & Isi Viewers-nya:
+                  Platform Publikasi (Centang & Laporkan Jumlah Penonton):
                 </label>
               </div>
 
@@ -302,20 +302,20 @@ export function TaskDetailModal({
                       <button
                         type="button"
                         onClick={() => togglePlatform(platform)}
-                        className="w-full flex items-center justify-between text-left text-xs font-bold text-slate-800"
+                        className="w-full flex items-center justify-between text-left text-xs font-bold text-slate-800 gap-2"
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
                           <input
                             type="checkbox"
                             checked={isChecked}
                             readOnly
-                            className="w-4 h-4 text-blue-600 rounded border-slate-300"
+                            className="w-4 h-4 text-blue-600 rounded border-slate-300 shrink-0"
                           />
-                          <span className={isChecked ? 'text-blue-950 font-extrabold' : ''}>{platform}</span>
+                          <span className={isChecked ? 'text-blue-950 font-extrabold truncate' : 'truncate'}>{platform}</span>
                         </div>
                         {isChecked && (
-                          <span className="text-[11px] font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
-                            {platformViewersMap[platform] ? `${platformViewersMap[platform]} viewers (+${platformViewersMap[platform]} poin)` : 'Isi Viewers 👇'}
+                          <span className="text-[10px] font-semibold text-blue-800 bg-blue-100 px-2 py-0.5 rounded shrink-0">
+                            {platformViewersMap[platform] ? `${platformViewersMap[platform]} viewers (+${platformViewersMap[platform]} poin)` : 'Isi Penonton 👇'}
                           </span>
                         )}
                       </button>
@@ -323,8 +323,8 @@ export function TaskDetailModal({
                       {/* Inline Viewer Input opens directly under checked platform */}
                       {isChecked && (
                         <div className="pt-1">
-                          <label className="block text-[11px] font-semibold text-blue-900 mb-1">
-                            Berapa viewers pada {platform}? (Format Wajib Angka)
+                          <label className="block text-[11px] font-semibold text-blue-950 mb-1 break-words">
+                            Jumlah penonton pada {platform}? (Format Wajib Angka)
                           </label>
                           <input
                             type="number"
@@ -356,17 +356,17 @@ export function TaskDetailModal({
             {/* Same-day 23:59 WIB deadline rule notice */}
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-950 space-y-1">
               <p className="font-bold text-amber-900">
-                ⏰ Aturan Waktu Viewers (Adil & Transparan):
+                ⏰ Aturan Pelaporan Penonton:
               </p>
-              <p className="text-[11px] text-amber-900 leading-relaxed">
-                Jumlah viewers dapat diisi atau diperbarui hari ini <strong>maksimal pukul 23:59 WIB</strong>. Setiap <strong>1 Viewer = +1 Poin Viewers</strong>!
+              <p className="text-[11px] text-amber-950 leading-relaxed">
+                Jumlah penonton dapat diisi atau diperbarui pada hari yang sama <strong>maksimal pukul 23:59 WIB</strong>. Setiap <strong>1 Viewer = +1 Poin Viewers</strong>!
               </p>
             </div>
 
             {/* Dual Point Summary Box */}
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-950 space-y-1">
               <div className="flex items-center justify-between font-bold">
-                <span>Rincian Akumulasi Poin Tugas Ini:</span>
+                <span>Akumulasi Poin Tugas Ini:</span>
                 <span className="text-emerald-800 text-sm font-extrabold">+{totalPointsToClaim} Total Poin</span>
               </div>
               <div className="flex flex-wrap gap-2 text-[11px] text-emerald-800 pt-0.5 font-medium">

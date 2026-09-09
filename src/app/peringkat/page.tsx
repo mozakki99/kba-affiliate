@@ -61,82 +61,82 @@ export default function PeringkatPage() {
           </div>
 
           {/* Special Banner for Diligent Affiliates Rewards */}
-          <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-5 rounded-2xl shadow-md border border-emerald-700 space-y-2">
+          <div className="bg-gradient-to-r from-emerald-900 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-emerald-700 space-y-2">
             <div className="flex items-center gap-2">
-              <Gift className="w-5 h-5 text-amber-400" />
-              <h2 className="text-base sm:text-lg font-bold">Program Apresiasi Afiliator Paling Rajin Pekan Ini!</h2>
+              <Gift className="w-5 h-5 text-amber-400 shrink-0" />
+              <h2 className="text-sm sm:text-base font-bold">Program Apresiasi Afiliator Teraktif Pekan Ini</h2>
             </div>
             <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-              KBA menyiapkan <strong>total apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin</strong> (masing-masing Rp 15.000). 
-              <strong className="text-amber-300"> Tidak peduli ada closing atau tidak</strong>, yang penting Anda rajin kerjakan & lapor tugas harian!
+              Kampus Bahasa Arab memberikan insentif apresiasi sebesar <strong>Rp 150.000 bagi 10 Afiliator Paling Rajin Pekan Ini</strong> (masing-masing Rp 15.000). 
+              Penilaian dihitung secara adil berdasarkan konsistensi publikasi edukasi harian Anda.
             </p>
           </div>
 
           {/* Highlight User Banner */}
           {userEntry && (
-            <div className="bg-white p-5 rounded-2xl border border-amber-300 shadow-sm flex flex-wrap items-center justify-between gap-4 font-sans">
+            <div className="bg-white p-4 sm:p-5 rounded-2xl border border-amber-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-sans">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 font-extrabold text-xl flex items-center justify-center shadow-sm">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-amber-500 text-slate-950 font-extrabold text-lg sm:text-xl flex items-center justify-center shadow-sm shrink-0">
                   #{userEntry.rank}
                 </div>
                 <div>
-                  <span className="bg-amber-100 text-amber-900 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded border border-amber-200">
+                  <span className="bg-amber-100 text-amber-900 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-amber-200 inline-block">
                     Posisi Anda Saat Ini
                   </span>
-                  <h2 className="text-lg font-bold text-slate-900 mt-1">
+                  <h2 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
                     {user.name} ({user.id})
                   </h2>
                   <p className="text-xs text-slate-600 font-medium">
                     {activeTab === 'Keaktifan'
-                      ? `Total Skor Keaktifan: ${userEntry.score} Poin Disetujui`
+                      ? `Total Skor Keaktifan: ${userEntry.score} Poin`
                       : `Penjualan Terverifikasi: ${userEntry.score} Transaksi (${userEntry.totalAmount})`}
                   </p>
                 </div>
               </div>
-              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs text-emerald-900 space-y-0.5">
+              <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs text-emerald-900 space-y-0.5 w-full sm:w-auto">
                 <p className="font-bold flex items-center gap-1">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Anda Masuk Top 10 Penerima Hadiah!
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> Masuk Top 10 Penerima Apresiasi
                 </p>
-                <p className="text-emerald-800 text-[11px]">Estimasi Apresiasi: Rp 15.000 (Data contoh)</p>
+                <p className="text-emerald-800 text-[11px]">Estimasi Insentif: Rp 15.000 (Pekan Ini)</p>
               </div>
             </div>
           )}
 
           {/* Main Leaderboard Tabs */}
           <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <div className="flex border-b border-slate-200 bg-slate-50 px-4">
+            <div className="flex flex-col sm:flex-row border-b border-slate-200 bg-slate-50">
               <button
                 onClick={() => setActiveTab('Keaktifan')}
-                className={`py-3.5 px-4 font-bold text-xs sm:text-sm border-b-2 transition-colors flex items-center gap-2 ${
+                className={`py-3 px-4 font-bold text-xs sm:text-sm border-b-2 sm:border-b-2 transition-colors flex items-center gap-2 ${
                   activeTab === 'Keaktifan'
-                    ? 'border-blue-700 text-blue-800'
+                    ? 'border-blue-700 text-blue-800 bg-white sm:bg-transparent'
                     : 'border-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Award className="w-4 h-4 text-amber-600" />
-                Peringkat Keaktifan (Afiliator Rajin)
+                <Award className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Peringkat Keaktifan Afiliator</span>
               </button>
               <button
                 onClick={() => setActiveTab('Penjualan')}
-                className={`py-3.5 px-4 font-bold text-xs sm:text-sm border-b-2 transition-colors flex items-center gap-2 ${
+                className={`py-3 px-4 font-bold text-xs sm:text-sm border-b-2 transition-colors flex items-center gap-2 ${
                   activeTab === 'Penjualan'
-                    ? 'border-blue-700 text-blue-800'
+                    ? 'border-blue-700 text-blue-800 bg-white sm:bg-transparent'
                     : 'border-transparent text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <ShoppingBag className="w-4 h-4 text-emerald-600" />
-                Peringkat Penjualan Terverifikasi
+                <ShoppingBag className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Peringkat Penjualan Terverifikasi</span>
               </button>
             </div>
 
             {/* Rules Explainer Banner */}
-            <div className="p-4 bg-blue-50/60 border-b border-blue-100 text-xs text-blue-900 flex items-start gap-2.5">
+            <div className="p-3.5 bg-blue-50/60 border-b border-blue-100 text-xs text-blue-900 flex items-start gap-2.5">
               <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold">Ketentuan Perhitungan Peringkat:</p>
-                <p className="text-blue-800 mt-0.5">
+                <p className="text-blue-900 opacity-90 mt-0.5 leading-relaxed text-[11px] sm:text-xs">
                   {activeTab === 'Keaktifan'
-                    ? 'Poin keaktifan dihitung murni dari tugas promosi yang Anda kirim dan disetujui admin KBA. Tidak dipengaruhi oleh ada atau tidaknya closing penjualan.'
+                    ? 'Poin keaktifan dihitung berdasarkan konsistensi publikasi tugas promosi harian yang disetujui.'
                     : 'Penjualan dihitung berdasarkan komisi transaksi terverifikasi melalui link Lynk.id Anda.'}
                 </p>
               </div>

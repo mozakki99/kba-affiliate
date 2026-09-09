@@ -223,7 +223,7 @@ export default function HomePage() {
 
                 <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-900 flex items-center justify-between gap-2 font-bold">
                   <span className="flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> Sistem Kejujuran KBA Active
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> Sistem Amanah & Absensi KBA Active
                   </span>
                   <a
                     href="https://t.me/materi_kba_official_private"
@@ -291,7 +291,7 @@ export default function HomePage() {
                   <span className="truncate">Poin Rajin</span>
                 </div>
                 <p className="text-base sm:text-lg font-extrabold text-blue-900">+{user.diligencePoints || 420} Poin</p>
-                <span className="text-[10px] text-blue-700 font-medium">Bonus Posting Absensi</span>
+                <span className="text-[10px] text-blue-700 font-medium">Bonus Absensi</span>
               </div>
 
               {/* Metric 4: Poin Viewers (Jangkauan) */}
@@ -318,10 +318,10 @@ export default function HomePage() {
             </div>
 
             {/* Trust System Explainer Notice */}
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between gap-2">
-              <span className="flex items-center gap-1.5 font-bold">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                SISTEM KEJUJURAN KBA: Begitu Anda centang "Saya Sudah Posting Hari Ini", poin keaktifan LANGSUNG MASUK!
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex flex-wrap items-center justify-between gap-2">
+              <span className="flex items-center gap-1.5 font-bold leading-relaxed">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                SISTEM AMANAH KBA: Poin keaktifan & viewers terakumulasi otomatis setelah konfirmasi absensi.
               </span>
               <a
                 href="https://t.me/materi_kba_official_private"
@@ -330,50 +330,50 @@ export default function HomePage() {
                 className="text-xs font-bold text-sky-800 hover:underline flex items-center gap-1 shrink-0"
               >
                 <Send className="w-3.5 h-3.5 text-sky-600" />
-                <span>Telegram Gambar</span>
+                <span>Telegram Resmi</span>
               </a>
             </div>
           </div>
 
           {/* BANNER HADIAH AFILIATOR PALING RAJIN */}
-          <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-sm border border-emerald-700 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 bg-amber-400 text-slate-950 rounded-lg">
+          <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-blue-900 text-white p-4 sm:p-5 rounded-2xl shadow-sm border border-emerald-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-start gap-2.5">
+              <div className="p-2 bg-amber-400 text-slate-950 rounded-lg shrink-0 mt-0.5 sm:mt-0">
                 <Gift className="w-5 h-5" />
               </div>
-              <div>
-                <span className="bg-amber-400 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">
-                  Program Afiliator Rajin
+              <div className="space-y-1">
+                <span className="bg-amber-400 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded inline-block">
+                  Program Afiliator Teraktif
                 </span>
-                <h2 className="font-bold text-sm sm:text-base text-white mt-0.5">
-                  Total Hadiah Rp 150.000 untuk 10 Afiliator Paling Rajin Pekan Ini!
+                <h2 className="font-bold text-sm sm:text-base text-white leading-snug">
+                  Total Apresiasi Rp 150.000 untuk 10 Afiliator Paling Rajin Pekan Ini!
                 </h2>
-                <p className="text-emerald-100 text-[11px]">
-                  Tidak dipengaruhi closing, yang penting rajin salin teks & centang tugas harian! (Insentif Rp 15.000 / orang).
+                <p className="text-emerald-100 text-[11px] leading-relaxed">
+                  Apresiasi khusus bagi mitra afiliator yang rutin publikasikan materi edukasi harian (Insentif Rp 15.000 / orang).
                 </p>
               </div>
             </div>
             <Link
               href="/peringkat"
-              className="px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs rounded-xl shrink-0 transition-colors"
+              className="px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs rounded-xl shrink-0 transition-colors w-full sm:w-auto text-center"
             >
               Lihat Top 10
             </Link>
           </div>
 
           {/* SEKSI DAFTAR TUGAS HARI INI (MULTI-TASK HARIAN) */}
-          <div className="bg-white p-5 rounded-2xl border-2 border-blue-600 shadow-sm space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div className="bg-white p-4 sm:p-5 rounded-2xl border-2 border-blue-600 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <span className="bg-blue-100 text-blue-950 font-extrabold text-xs px-3 py-1 rounded-lg inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-blue-700" />
-                  DAFTAR TUGAS HARI INI ({tasks.filter((t) => t.deadline.includes('Hari ini')).length} MISI AKTIF)
+                  <Clock className="w-3.5 h-3.5 text-blue-700 shrink-0" />
+                  TUGAS HARI INI ({tasks.filter((t) => t.deadline.includes('Hari ini')).length} MISI AKTIF)
                 </span>
                 <h2 className="font-bold text-slate-900 text-base sm:text-lg mt-1.5">
-                  Misi Promosi Harian Afiliator (Berlaku s.d 23:59 WIB)
+                  Misi Promosi Harian (Batas Absensi 23:59 WIB)
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Kerjakan & centang absensi untuk klaim +Poin Rajin & +Poin Viewers!
+                  Kerjakan & lapor absensi untuk akumulasi Poin Rajin dan Poin Viewers.
                 </p>
               </div>
 
